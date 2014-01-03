@@ -67,7 +67,14 @@ public class Request {
 	}
 
 	public String getURI() {
-		return this.getType().split(" ")[1];
+		
+		String retVal = this.getType().split(" ")[1];
+		
+		if (retVal.contains("?")) {
+			retVal = retVal.split("?")[0];
+		}
+		
+		return retVal ;
 	}
 
 	public String getPath() {

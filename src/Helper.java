@@ -49,5 +49,4 @@ public class Helper {
 
 		return ret;
 	}
-
 }

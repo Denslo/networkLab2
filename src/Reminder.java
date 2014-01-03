@@ -21,6 +21,7 @@ public class Reminder {
 	private DateFormat due_date;
 	private boolean was_handled;
 
+	
 	public Reminder(String key, String value) {
 		String[] temp = value.split(DELIMITER);
 		
@@ -117,7 +118,7 @@ public class Reminder {
 		
 	}
 	//TODO DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-	public static void main(String[] args) throws IOException {
+	/*public static void main(String[] args) throws IOException {
 		//Reminder rem = new Reminder("123", "shaiambar;this is data;sub;1987/23/12 12:23:43;1999/23/14 22:43:43;true");
 		 Properties a = new Properties();
 		 FileInputStream shai = new FileInputStream("C:\\School\\Networks\\shai.txt");
@@ -145,11 +146,11 @@ public class Reminder {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		 
 		 //create a new reminder
 		 //crette a now propet
 		 //save rem
-	}
+	}*/
 	
 }

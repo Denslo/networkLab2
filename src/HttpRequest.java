@@ -29,7 +29,13 @@ public class HttpRequest implements Runnable {
 			parsRequest();
 
 			if (response.isOK()) {
-				buildResponse();
+				
+				if (isSMTPorIndexRequest()) {
+					SMTPRequest.handler(request,response);
+				} else {
+					buildResponse();
+				}
+				
 			}
 
 		} catch (Exception e) {
@@ -50,6 +56,17 @@ public class HttpRequest implements Runnable {
 			} catch (IOException e) {
 			}
 		}
+	}
+
+	private boolean isSMTPorIndexRequest() {
+		
+		boolean retVal = false;
+		
+		if (request.getURI().toLowerCase().startsWith("/index.html") || request.getURI().toLowerCase().startsWith("/smtp/")) {
+			retVal = true;
+		}
+		
+		return retVal;
 	}
 
 	private void sendResponse() throws IOException {
@@ -73,10 +90,6 @@ public class HttpRequest implements Runnable {
 
 		this.socket.close();
 		this.queue.Dequeue();
-		// TODO send response
-		// if length > 0 cheack chankes
-		// true - send in chankes
-		// else - send all
 
 	}
 
@@ -84,10 +97,10 @@ public class HttpRequest implements Runnable {
 
 		switch (request.getMethod()) {
 		case "GET":
-			buildGETResponse();
+			Helper.buildGETResponse(request,response);
 			break;
 		case "POST":
-			buildPOSTResponse();
+			Helper.buildPOSTResponse(request,response);
 			break;
 		case "OPTIONS":
 			buildOPTIONSResponse();
@@ -117,7 +130,7 @@ public class HttpRequest implements Runnable {
 
 	private void buildHEADResponse() {
 
-		if (filePathOK()) {
+		if (Helper.filePathOK(request)) {
 
 			File requestFile = new File(request.getPath());
 
@@ -126,22 +139,7 @@ public class HttpRequest implements Runnable {
 		}
 	}
 
-	private boolean filePathOK() {
 
-		boolean ret = false;
-
-		File requestFile = new File(request.getPath());
-
-		if (requestFile.exists()) {
-			ret = true;
-		}
-
-		if (request.getURI().contains("..")) {
-			ret = false;
-		}
-
-		return ret;
-	}
 
 	private void buildOPTIONSResponse() {
 		if (request.getURI().equals("*")) {
@@ -149,34 +147,6 @@ public class HttpRequest implements Runnable {
 		} else {
 			response.setBadRequest(request.GetHttpVer());
 		}
-	}
-
-	private void buildPOSTResponse() throws IOException {
-		if (filePathOK()) {
-
-			File requestFile = new File(request.getPath());
-			String fileExtention = request.getURI().substring(request.getURI().lastIndexOf(".") + 1);
-			int fileLength = (int) requestFile.length();
-
-			response.setGETandPOST(fileLength, fileExtention, requestFile);
-		} else {
-			this.response.setBadRequest(request.GetHttpVer());
-		}
-
-	}
-
-	private void buildGETResponse() throws IOException {
-		if (filePathOK()) {
-
-			File requestFile = new File(request.getPath());
-			String fileExtention = request.getURI().substring(request.getURI().lastIndexOf(".") + 1);
-			int fileLength = (int) requestFile.length();
-
-			response.setGETandPOST(fileLength, fileExtention, requestFile);
-		} else {
-			this.response.setBadRequest(request.GetHttpVer());
-		}
-
 	}
 
 	private void parsRequest() throws IOException, Exception {

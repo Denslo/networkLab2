@@ -15,6 +15,7 @@ public class Server {
 
 		try {
 			prop.load(new FileInputStream(CONFIG_FILE));
+			startSMTPNotifictionThread();
 			startLisning();
 		} catch (NumberFormatException e) {
 			System.out.println("Plz check 'port' value in config.ini");
@@ -29,6 +30,11 @@ public class Server {
 			System.out.println("we had a problem in the Requst queue");
 			e.printStackTrace();
 		}
+	}
+
+	private static void startSMTPNotifictionThread() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private static void startLisning() throws NumberFormatException, IOException, InterruptedException {

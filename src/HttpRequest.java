@@ -97,10 +97,8 @@ public class HttpRequest implements Runnable {
 
 		switch (request.getMethod()) {
 		case "GET":
-			Helper.buildGETResponse(request,response);
-			break;
 		case "POST":
-			Helper.buildPOSTResponse(request,response);
+			Helper.buildGETorPostResponse(request,response);
 			break;
 		case "OPTIONS":
 			buildOPTIONSResponse();

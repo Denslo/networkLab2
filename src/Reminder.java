@@ -1,6 +1,10 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Properties;
 
 public class Reminder {
 
@@ -129,5 +133,12 @@ public class Reminder {
 
 		return stringForReturn.toString();
 
+	}
+	//TODO?"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""'
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		Properties prop = new Properties();
+		 prop.load(new FileInputStream("config.ini"));
+		 prop.load(new FileInputStream("C:\\School\\Networks\\shai.txt"));
+		 System.out.println("fooo");
 	}
 }

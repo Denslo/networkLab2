@@ -62,7 +62,7 @@ public class HttpRequest implements Runnable {
 		
 		boolean retVal = false;
 		
-		if (request.getURI().toLowerCase().startsWith("/index.html") || request.getURI().toLowerCase().startsWith("/smtp/")) {
+		if (request.getURI(true).toLowerCase().startsWith("/index.html") || request.getURI(true).toLowerCase().startsWith("/smtp/")) {
 			retVal = true;
 		}
 		
@@ -118,7 +118,7 @@ public class HttpRequest implements Runnable {
 	}
 
 	private void buildTRACEResponse() {
-		if (!(request.getURI().equalsIgnoreCase("/"))) {
+		if (!(request.getURI(false).equalsIgnoreCase("/"))) {
 			response.setBadRequest(request.GetHttpVer());
 		} else {
 			response.setTRACE(request);
@@ -132,7 +132,7 @@ public class HttpRequest implements Runnable {
 
 			File requestFile = new File(request.getPath());
 
-			String fileExtention = request.getURI().substring(request.getURI().lastIndexOf(".") + 1);
+			String fileExtention = request.getURI(true).substring(request.getURI(true).lastIndexOf(".") + 1);
 			response.setHEAD((int) requestFile.length(), fileExtention);
 		}
 	}
@@ -140,7 +140,7 @@ public class HttpRequest implements Runnable {
 
 
 	private void buildOPTIONSResponse() {
-		if (request.getURI().equals("*")) {
+		if (request.getURI(false).equals("*")) {
 			response.setOPTIONS(request.GetHttpVer());
 		} else {
 			response.setBadRequest(request.GetHttpVer());
@@ -188,12 +188,12 @@ public class HttpRequest implements Runnable {
 			return;
 		}
 
-		if (request.getURI().equals("/")) {
+		if (request.getURI(true).equals("/")) {
 			request.setPath("/index.html");
 		}
 
 		if (uriContainParam()) {
-			this.request.addParams(this.request.getURI().split("\\?")[1]);
+			this.request.addParams(this.request.getURI(false).split("\\?")[1]);
 		}
 
 		if (request.getMethod().equals("POST") && request.getHeaderValue("Content-Length") != null) {
@@ -206,7 +206,7 @@ public class HttpRequest implements Runnable {
 	}
 
 	private boolean uriContainParam() {
-		return this.request.getURI().contains("?");
+		return this.request.getURI(false).contains("?");
 	}
 
 	private boolean isVersionSuported() {

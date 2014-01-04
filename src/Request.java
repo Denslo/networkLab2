@@ -66,19 +66,31 @@ public class Request {
 		return this.getType().split(" ")[0];
 	}
 
-	public String getURI() {
+	public String getURI(boolean removeParamsFromURI) {
 		
 		String retVal = this.getType().split(" ")[1];
 		
-		if (retVal.contains("?")) {
-			retVal = retVal.split("?")[0];
+		if (removeParamsFromURI) {
+			if (retVal.contains("?")) {
+				retVal = retVal.split("\\?")[0];
+			}
 		}
 		
 		return retVal ;
 	}
 
 	public String getPath() {
-		return Server.prop.getProperty("root") + this.getURI().substring(1).replaceAll("/", "\\");
+		String[] temp = this.getURI(true).substring(1).split("/");
+		StringBuilder temp2 = new StringBuilder();
+		
+		for (String string : temp) {
+			temp2.append(string);
+			temp2.append("\\");
+		}
+		
+		temp2.deleteCharAt(temp2.length()-1);
+		
+		return Server.prop.getProperty("root") + temp2.toString();
 	}
 
 	public void setPath(String string) {

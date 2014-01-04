@@ -1,11 +1,3 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
-
-
 public class Recipient {
 	
 	private final String DELIMITER = ";";
@@ -48,50 +40,15 @@ public class Recipient {
 	
 	public String toString(){
 		StringBuilder stringForReturn = new StringBuilder();
+		stringForReturn.append(String.valueOf(id));
+		stringForReturn.append(DELIMITER);
 		
 		stringForReturn.append(mail);
 		stringForReturn.append(DELIMITER);
 		
 		stringForReturn.append(didReply);
 		
+		
 		return stringForReturn.toString();
 	}
-	
-	//TODO DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-		public static void main(String[] args) throws IOException {
-			//Recipient rem = new Recipient("123;shaiambar;true");
-			 Properties a = new Properties();
-			 FileInputStream shai = new FileInputStream("C:\\School\\Networks\\ran.txt");
-			 File file = new File("C:\\School\\Networks\\ran.txt");
-			FileOutputStream fos = null;
-			fos = new FileOutputStream(file);
-			
-			a.load(shai);
-			
-			System.out.println(a.get("123"));
-			Reminder rem = new Reminder("123", (String) a.get("123"));
-			System.out.println(rem.toString());
-			
-			/*
-			try {
-				fos = new FileOutputStream(file);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			a.put(rem.getId() + "", rem.toString());
-			 try {
-				a.store(fos, null);
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			 
-			 //create a new reminder
-			 //crette a now propet
-			 //save rem*/
-		}
-		
-
 }

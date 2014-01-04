@@ -43,7 +43,6 @@ public class Helper {
 		return ret;
 	}
 
-
 	public static boolean EmailValidator(String eMail) {
 		
 		boolean retVal = false;

@@ -1,48 +1,33 @@
 import java.io.IOException;
 
 public class SMTPRequest {
-	
+
 	private static String COOKE_START_WITH = "usermail-";
 	private static String COOKE_PARAM = "user";
-	private static String ANSWER_PARAM = "answer";
 
 	public static void handler(Request request, Response response) throws IOException {
-
-		if (uriIsIndexAndNoParamsNoCooke(request)) {
-
-			Helper.buildGETorPostResponse(request, response);
-
-		} else if (uriIsIndexAndParams(request)) {
-			
-			if (Helper.EmailValidator(request.getParams().get(COOKE_PARAM))) {
+		
+		if (!isCookeOK(request) && !isUriIndex(request)) {
 	
-				response.addHeader("Set-Cookie", COOKE_START_WITH + request.getParams().get(COOKE_PARAM));
-			}
-			
-			//TODO redyrect to main
-
-
-		} else if (isResponseToTaskOrPoll(request)) {
- 
-			//TODO send to the right class for handaling
-
-		} else if (!isCookeOK(request)) {
-
-			//TODO redyrect to index
-
-		} else if (uriIsIndexAndCookeOK(request)) {
-
-			//TODO redyrect to main
-
+			response.setRedirect("/index.html" , request.GetHttpVer());
+	
 		} else {
 
 			switch (request.getURI(true).toLowerCase()) {
+			case "/index.html":
+				
+				activateIndexHTML(request, response);
+				
+				break;
+			
 			case "/smtp/main.html":
 				
+				activateMainHTML(request,response);
+
 				break;
 
 			case "/smtp/reminders.html":
-				
+
 				break;
 
 			case "/smtp/reminder_editor.html":
@@ -95,10 +80,36 @@ public class SMTPRequest {
 		}
 
 	}
+	
+	private static void activateMainHTML(Request request, Response response) {
+		// TODO Auto-generated method stub
+		
+	}
 
-	private static boolean uriIsIndexAndParams(Request request) {
+	private static void activateIndexHTML(Request request, Response response) throws IOException {
+		
+		if (isCookeOK(request)) {
+			response.setRedirect("/smtp/main.html" , request.GetHttpVer());
+			return;
+		} 
+		
+		if (!request.getParams().isEmpty() && request.getParams().get(COOKE_PARAM) != null) {
+			
+			if (Helper.EmailValidator(request.getParams().get(COOKE_PARAM))) {
+				response.addHeader("Set-Cookie", COOKE_START_WITH + request.getParams().get(COOKE_PARAM));
+			}
+			
+			response.setRedirect("/index.html" , request.GetHttpVer());
+			return;
+		}
+		
+		Helper.buildGETorPostResponse(request, response);
+		
+	}
+	
+	private static boolean isUriIndex(Request request) {
 
-		return isUriIndex(request) && !request.getParams().isEmpty();
+		return request.getURI(true).toLowerCase().equals("/index.html");
 	}
 
 	private static boolean isCookeOK(Request request) {
@@ -118,46 +129,24 @@ public class SMTPRequest {
 	}
 
 	private static boolean validateCooke(String cooke) {
-		boolean retVal = false;
-		
-		if (cooke.toLowerCase().startsWith(COOKE_START_WITH)) {
-			
-			String eMail = cooke.substring(COOKE_START_WITH.length() -1);
-			
-			if (Helper.EmailValidator(eMail)) {
-				retVal = true;
-			}
+	boolean retVal = false;
+
+	if (cooke.toLowerCase().startsWith(COOKE_START_WITH)) {
+
+		String eMail = cooke.substring(COOKE_START_WITH.length() - 1);
+
+		if (Helper.EmailValidator(eMail)) {
+			retVal = true;
 		}
-		
-		return retVal;
 	}
 
-	private static boolean isResponseToTaskOrPoll(Request request) {
+	return retVal;
+}
 
-		boolean retVal = false;
-		
-		if (request.getParams().get(ANSWER_PARAM) != null) {
-			if (request.getParams().get(ANSWER_PARAM).toLowerCase().equals("true")) {
-				retVal = true;
-			}
-		}
 
-		return retVal;
-	}
 
-	private static boolean uriIsIndexAndCookeOK(Request request) {
 
-		return isUriIndex(request) && isCookeOK(request);
-	}
 
-	private static boolean uriIsIndexAndNoParamsNoCooke(Request request) {
 
-		return isUriIndex(request) && request.getParams().isEmpty() && !isCookeOK(request);
-	}
-
-	private static boolean isUriIndex(Request request) {
-
-		return request.getURI(true).toLowerCase().equals("/index.html");
-	}
 
 }

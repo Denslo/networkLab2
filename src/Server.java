@@ -34,7 +34,7 @@ public class Server {
 
 	private static void startSMTPNotifictionThread() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private static void startLisning() throws NumberFormatException, IOException, InterruptedException {

@@ -29,13 +29,13 @@ public class HttpRequest implements Runnable {
 			parsRequest();
 
 			if (response.isOK()) {
-				
+
 				if (isSMTPorIndexRequest()) {
-					SMTPRequest.handler(request,response);
+					SMTPRequest.handler(request, response);
 				} else {
 					buildResponse();
 				}
-				
+
 			}
 
 		} catch (Exception e) {
@@ -45,7 +45,6 @@ public class HttpRequest implements Runnable {
 			try {
 				sendResponse();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
@@ -59,13 +58,13 @@ public class HttpRequest implements Runnable {
 	}
 
 	private boolean isSMTPorIndexRequest() {
-		
+
 		boolean retVal = false;
-		
+
 		if (request.getURI(true).toLowerCase().startsWith("/index.html") || request.getURI(true).toLowerCase().startsWith("/smtp/")) {
 			retVal = true;
 		}
-		
+
 		return retVal;
 	}
 
@@ -98,7 +97,7 @@ public class HttpRequest implements Runnable {
 		switch (request.getMethod()) {
 		case "GET":
 		case "POST":
-			Helper.buildGETorPostResponse(request,response);
+			Helper.buildGETorPostResponse(request, response);
 			break;
 		case "OPTIONS":
 			buildOPTIONSResponse();
@@ -136,8 +135,6 @@ public class HttpRequest implements Runnable {
 			response.setHEAD((int) requestFile.length(), fileExtention);
 		}
 	}
-
-
 
 	private void buildOPTIONSResponse() {
 		if (request.getURI(false).equals("*")) {

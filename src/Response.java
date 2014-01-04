@@ -207,4 +207,11 @@ public class Response {
 		return contentType;
 	}
 
+	public void setRedirect(String address, String httpVer) {
+
+		this.setType(httpVer + " 302 Found");
+		this.addHeader("Location", address);
+		
+	}
+
 }

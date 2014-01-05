@@ -26,8 +26,8 @@ public class SMTPNotifictionThread implements Runnable  {
 			DateFormat currentDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Calendar cal = Calendar.getInstance();
 			reminderFile = new FileInputStream((String) Server.prop.get(REMINDER_FILE));
-			taskFile = new FileInputStream((String)prop.getProperty(TASK_FILE));
-			pollsFile = new FileInputStream((String)prop.getProperty(POLLS_FILE));
+			taskFile = new FileInputStream((String)Server.prop.getProperty(TASK_FILE));
+			pollsFile = new FileInputStream((String)Server.prop.getProperty(POLLS_FILE));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -73,7 +73,7 @@ public class SMTPNotifictionThread implements Runnable  {
 			//if (reminder.getDue_date()) {
 				
 				
-			}
+		//	}
 		}
 		
 	}

@@ -9,7 +9,7 @@ import java.util.Properties;
 public class Reminder {
 
 	private final String DELIMITER = ";;;";
-	private int id;
+	private String id;
 	private String creator;
 	private String data;
 	private String subject;
@@ -22,7 +22,7 @@ public class Reminder {
 		try {
 			String[] temp = value.split(DELIMITER);
 
-			this.id = Integer.parseInt(key);
+			this.id = key;
 			this.creator = temp[0];
 			this.data = temp[1];
 			this.subject = temp[2];
@@ -33,7 +33,7 @@ public class Reminder {
 			
 		} catch (Exception e) {
 
-			this.id = -1;
+			this.id = "";
 			this.creator = "";
 			this.data = "";
 			this.subject = "";
@@ -44,11 +44,11 @@ public class Reminder {
 		}
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

@@ -1,24 +1,26 @@
 public class Recipient {
 	
 	private final String DELIMITER = ";";
-	private int id;
+	private String id;
 	private String mail;
 	private boolean didReply;
+	private boolean wasSent;
 	
 	public Recipient(String value){
 		String[] temp = value.split(DELIMITER);
 		
-		this.id = Integer.parseInt(temp[0]);
+		this.id = temp[0];
 		this.mail = temp[1];
 		this.didReply = Boolean.parseBoolean(temp[2]);
+		this.setWasSent(Boolean.parseBoolean(temp[3]));
 		
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -40,7 +42,7 @@ public class Recipient {
 	
 	public String toString(){
 		StringBuilder stringForReturn = new StringBuilder();
-		stringForReturn.append(String.valueOf(id));
+		stringForReturn.append(id);
 		stringForReturn.append(DELIMITER);
 		
 		stringForReturn.append(mail);
@@ -50,5 +52,13 @@ public class Recipient {
 		
 		
 		return stringForReturn.toString();
+	}
+
+	public boolean isWasSent() {
+		return wasSent;
+	}
+
+	public void setWasSent(boolean wasSent) {
+		this.wasSent = wasSent;
 	}
 }

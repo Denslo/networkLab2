@@ -4,7 +4,7 @@ public class Recipient {
 	private String id;
 	private String mail;
 	private boolean didReply;
-	private boolean wasSent;
+	private boolean wasFirstSent;
 	
 	public Recipient(String value){
 		String[] temp = value.split(DELIMITER);
@@ -12,7 +12,7 @@ public class Recipient {
 		this.id = temp[0];
 		this.mail = temp[1];
 		this.didReply = Boolean.parseBoolean(temp[2]);
-		this.setWasSent(Boolean.parseBoolean(temp[3]));
+		this.setWasFirstSent(Boolean.parseBoolean(temp[3]));
 		
 	}
 
@@ -40,6 +40,14 @@ public class Recipient {
 		this.didReply = didReply;
 	}
 	
+	public boolean isWasFirstSent() {
+		return wasFirstSent;
+	}
+	
+	public void setWasFirstSent(boolean wasSent) {
+		this.wasFirstSent = wasSent;
+	}
+	
 	public String toString(){
 		StringBuilder stringForReturn = new StringBuilder();
 		stringForReturn.append(id);
@@ -49,16 +57,12 @@ public class Recipient {
 		stringForReturn.append(DELIMITER);
 		
 		stringForReturn.append(didReply);
+		stringForReturn.append(DELIMITER);
+		
+		stringForReturn.append(wasFirstSent);
 		
 		
 		return stringForReturn.toString();
 	}
 
-	public boolean isWasSent() {
-		return wasSent;
-	}
-
-	public void setWasSent(boolean wasSent) {
-		this.wasSent = wasSent;
-	}
 }

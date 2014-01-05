@@ -20,6 +20,9 @@ public class Task extends Reminder {
 			this.setWasParsedOk(false);
 		}
 	}
+	public Recipient[] getRecipient(){
+		return recipient;
+	}
 
 	@Override
 	public String toString() {

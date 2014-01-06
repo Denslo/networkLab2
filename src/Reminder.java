@@ -6,7 +6,7 @@ import java.util.Calendar;
 public class Reminder {
 
 	private final String DELIMITER = ";;;";
-	private final DateFormat DATE_FORMAT= new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private final DateFormat DATE_FORMAT= new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	private String id;
 	private String creator;
 	private String data;
@@ -86,6 +86,30 @@ public class Reminder {
 	public Calendar getWhen_created() {
 		return when_created;
 	}
+	public String getTimeWhen_created(){
+		StringBuilder stringForReturn = new StringBuilder();
+		
+		stringForReturn.append(Integer.toString(when_created.get(Calendar.HOUR_OF_DAY)));
+		stringForReturn.append(":");
+		stringForReturn.append(Integer.toString(when_created.get(Calendar.MINUTE)));
+		
+		return stringForReturn.toString();
+	}
+	
+	public String getStringWhen_created() {
+		
+		StringBuilder stringForReturn = new StringBuilder();
+		stringForReturn.append(when_created.get(Calendar.DATE));
+		
+		stringForReturn.append("/");
+		stringForReturn.append(when_created.get(Calendar.MONTH));
+		
+		stringForReturn.append("/");
+		stringForReturn.append(when_created.get(Calendar.YEAR));
+		
+		return stringForReturn.toString();
+		
+	}
 
 	public void setWhen_created(Calendar when_created) {
 		this.when_created = when_created;
@@ -94,6 +118,31 @@ public class Reminder {
 	public Calendar getDue_date() {
 		return due_date;
 	}
+	public String getStringDue_date(){
+		StringBuilder stringForReturn = new StringBuilder();
+		stringForReturn.append(due_date.get(Calendar.DATE));
+		
+		stringForReturn.append("/");
+		stringForReturn.append(due_date.get(Calendar.MONTH));
+		
+		stringForReturn.append("/");
+		stringForReturn.append(due_date.get(Calendar.YEAR));
+		
+		return stringForReturn.toString();
+		
+	}
+	
+	public String getTimeDue_date(){
+		StringBuilder stringForReturn = new StringBuilder();
+		
+		stringForReturn.append(Integer.toString(due_date.get(Calendar.HOUR_OF_DAY)));
+		stringForReturn.append(":");
+		stringForReturn.append(Integer.toString(due_date.get(Calendar.MINUTE)));
+		
+		return stringForReturn.toString();
+		
+	}
+	
 
 	public void setDue_date(Calendar due_date) {
 		this.due_date = due_date;
@@ -139,12 +188,15 @@ public class Reminder {
 		return stringForReturn.toString();
 
 	}
-	/*TODO?"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""'
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		Properties prop = new Properties();
+	//TODO?"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""'
+	public static void main(String[] args)  {
+		//Properties prop = new Properties();
 		 //prop.load(new FileInputStream("config.ini"));
 		// prop.load(new FileInputStream("C:\\School\\Networks\\shai.txt"));
-		Reminder r = new Reminder("123", "sbar;;;this is data;;;sub;;;2014/23/12 12:23:43;;;2014/23/14 22:43:43;;;false");
-		 //System.out.println(r.toString());
-	}*/
+		Reminder r = new Reminder("123", "sbar;;;this is data;;;sub;;;22/12/2098 12:23:43;;;6/6/2098 22:43:43;;;false");
+		 System.out.println(r.getStringWhen_created());
+		 System.out.println(r.getTimeWhen_created());
+		 System.out.println(r.getStringDue_date());
+		 System.out.println(r.getTimeDue_date());
+	}
 }

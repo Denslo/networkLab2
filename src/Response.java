@@ -178,12 +178,15 @@ public class Response {
 
 		this.addHeader("Content-Type", contentType);
 		this.addHeader("Content-Length", contentLength);
-
-		FileInputStream fileStream = new FileInputStream(requestFile);
-		data = new byte[length];
-		fileStream.read(data);
 		
-		fileStream.close();
+		if (requestFile != null) {
+			FileInputStream fileStream = new FileInputStream(requestFile);
+			data = new byte[length];
+			fileStream.read(data);
+			
+			fileStream.close();
+		}
+		
 	}
 
 	private String getContentType(String fileExtention) {

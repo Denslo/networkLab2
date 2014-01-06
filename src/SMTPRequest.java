@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class SMTPRequest {
@@ -5,8 +7,9 @@ public class SMTPRequest {
 	private static String COOKIE_NAME = "usermail=";
 	private static String COOKE_PARAM = "user";
 	private static String LOG_OUT_PARAM = "logout";
+	private static String DELETE_PARAM = "delete";
 
-	public static void handler(Request request, Response response) throws IOException {
+	public static void handler(Request request, Response response) throws Exception {
 
 		if (!isCookeOK(request) && !isUriIndex(request)) {
 
@@ -28,6 +31,8 @@ public class SMTPRequest {
 				break;
 
 			case "/smtp/reminders.html":
+
+				activateRemindersHTML(request, response);
 
 				break;
 
@@ -82,6 +87,56 @@ public class SMTPRequest {
 
 	}
 
+	private static void activateRemindersHTML(Request request, Response response) throws Exception {
+
+		if (request.getParams().get(DELETE_PARAM) != null) {
+			DBHandler.deleteReminder(request.getParams().get(DELETE_PARAM), getMailFromCookie(request));
+			response.setRedirect(request.getURI(true), request.GetHttpVer());
+			return;
+		}
+
+		File file = new File(request.getPath());
+		FileInputStream fis = new FileInputStream(file);
+		byte[] byteReader = new byte[(int) file.length()];
+		fis.read(byteReader);
+		fis.close();
+
+		String origSite = new String(byteReader);
+
+		String userMail = getMailFromCookie(request);
+		String siteWithUserMail = origSite.replaceAll("%mail%", userMail);
+
+		Reminder[] userData = DBHandler.getRimindersByUserMail(userMail);
+		String siteWithUserMailAndData = siteWithUserMail.replaceAll("%table%", parsUserData(userData));
+
+		response.setData(siteWithUserMailAndData.getBytes());
+		Helper.buildGETorPostResponse(request, response);
+
+	}
+
+	private static String parsUserData(Reminder[] userData) {
+
+		StringBuilder retVal = new StringBuilder();
+		retVal.append("<table border=\"1\">");
+		retVal.append("<tr><th>Title</th><th>Created On</th><th>Reminding Date</th></tr>");
+
+		for (Reminder reminder : userData) {
+			retVal.append("<tr>");
+
+			retVal.append("<td>" + reminder.getSubject() + "</td>");
+			retVal.append("<td>" + reminder.getWhen_created() + "</td>");
+			retVal.append("<td>" + reminder.getWhen_created() + "</td>");
+
+			retVal.append("<td><a href=reminder_editor.html?edit=" + reminder.getId() + ">Edit</a></td>");
+			retVal.append("<td><a href=reminder.html?delete=" + reminder.getId() + ">Delete</a></td>");
+
+			retVal.append("</tr>");
+		}
+
+		retVal.append("</table>");
+		return retVal.toString();
+	}
+
 	private static void activateMainHTML(Request request, Response response) throws IOException {
 
 		if (request.getParams().get(LOG_OUT_PARAM) != null) {
@@ -91,7 +146,7 @@ public class SMTPRequest {
 				return;
 			}
 		}
-		
+
 		Helper.buildGETorPostResponse(request, response);
 
 	}
@@ -106,7 +161,7 @@ public class SMTPRequest {
 		if (request.getParams().get(COOKE_PARAM) != null) {
 
 			if (Helper.EmailValidator(request.getParams().get(COOKE_PARAM))) {
-				response.addHeader("Set-Cookie",COOKIE_NAME + request.getParams().get(COOKE_PARAM));
+				response.addHeader("Set-Cookie", COOKIE_NAME + request.getParams().get(COOKE_PARAM));
 			}
 			response.setRedirect(Server.prop.getProperty("defaultPage"), request.GetHttpVer());
 			return;
@@ -138,7 +193,7 @@ public class SMTPRequest {
 	}
 
 	private static boolean validateCooke(String cooke) {
-		
+
 		boolean retVal = false;
 
 		if (cooke.toLowerCase().startsWith(COOKIE_NAME)) {
@@ -151,6 +206,10 @@ public class SMTPRequest {
 		}
 
 		return retVal;
+	}
+
+	private static String getMailFromCookie(Request request) {
+		return request.getHeaderValue("Cookie").substring(COOKIE_NAME.length());
 	}
 
 }

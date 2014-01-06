@@ -61,7 +61,13 @@ public class Request {
 	}
 
 	public String GetHttpVer() {
-		return this.getType().split(" ")[2];
+		String retVal = "HTTP/1.0";
+		
+		if (this.getType() != null) {
+			retVal = this.getType().split(" ")[2];
+		}
+		
+		return retVal;
 	}
 
 	public String getMethod() {

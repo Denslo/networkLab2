@@ -16,9 +16,18 @@ public class Helper {
 
 			File requestFile = new File(request.getPath());
 			String fileExtention = request.getURI(true).substring(request.getURI(true).lastIndexOf(".") + 1);
-			int fileLength = (int) requestFile.length();
-
+			
+			int fileLength;
+			
+			if (response.getData().length == 0) {
+				fileLength = (int) requestFile.length();
+			} else {
+				fileLength = response.getData().length;
+				requestFile =null;
+			}
+			
 			response.setGETandPOST(fileLength, fileExtention, requestFile);
+			
 		} else {
 			response.setNotFound(request.GetHttpVer());
 		}

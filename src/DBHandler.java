@@ -6,7 +6,7 @@ public class DBHandler {
 		return null;
 	}
 
-	public static void deleteReminder(String string, String mail) {
+	public synchronized static void deleteReminder(String id, String mail) {
 		// TODO get the reminder from the db by id. if the reminder creator == mail delete this record
 		
 	}

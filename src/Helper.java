@@ -20,7 +20,7 @@ public class Helper {
 
 			response.setGETandPOST(fileLength, fileExtention, requestFile);
 		} else {
-			response.setBadRequest(request.GetHttpVer());
+			response.setNotFound(request.GetHttpVer());
 		}
 		
 	}

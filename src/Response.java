@@ -51,7 +51,13 @@ public class Response {
 	}
 
 	public byte[] getData() {
-		return data.clone();
+		byte[] retVal = new byte[0];
+		
+		if (data != null) {
+			retVal = data.clone();
+		}
+		
+		return retVal;
 	}
 
 	public void setBadRequest(String httpVersion) {

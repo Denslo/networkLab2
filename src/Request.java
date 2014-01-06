@@ -1,3 +1,5 @@
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +45,7 @@ public class Request {
 		return this.type;
 	}
 
-	public void addParams(String str) {
+	public void addParams(String str) throws UnsupportedEncodingException {
 
 		if (str != null && !str.equals("")) {
 			String[] parameters = str.split("&");
@@ -51,7 +53,7 @@ public class Request {
 				String[] param = subStr.split("=");
 				if (param.length == 2) {
 					if (this.params.get(param[0]) == null) {
-						this.params.put(param[0], param[1]);
+						this.params.put(param[0], URLDecoder.decode(param[1],"UTF-8"));
 					}
 				}
 			}

@@ -185,8 +185,8 @@ public class HttpRequest implements Runnable {
 			return;
 		}
 
-		if (request.getURI(true).equals("/")) {
-			request.setPath("/index.html");
+		if (request.getURI(true).equals("/") || request.getURI(true).equals("/index.html")) {
+			response.setRedirect(Server.prop.getProperty("defaultPage"), request.GetHttpVer());
 		}
 
 		if (uriContainParam()) {

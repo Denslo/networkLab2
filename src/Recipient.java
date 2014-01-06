@@ -6,6 +6,12 @@ public class Recipient {
 	private boolean didReply;
 	private boolean wasFirstSent;
 	
+	public Recipient(){
+		this.id = "";
+		this.mail = "";
+		this.didReply = false;
+		this.setWasFirstSent(false);
+	}
 	public Recipient(String value){
 		String[] temp = value.split(DELIMITER);
 		
@@ -13,7 +19,6 @@ public class Recipient {
 		this.mail = temp[1];
 		this.didReply = Boolean.parseBoolean(temp[2]);
 		this.setWasFirstSent(Boolean.parseBoolean(temp[3]));
-		
 	}
 
 	public String getId() {

@@ -6,6 +6,8 @@ public class Polls extends Task {
 
 	public Polls(String key, String value) {
 		super(key, value);
+		answer = new Answer[1];
+		answer[0] = new Answer("");
 		
 		try {
 
@@ -18,8 +20,6 @@ public class Polls extends Task {
 				this.answer[i] = new Answer(answers[i]);
 			}
 		} catch (Exception e) {
-			answer = new Answer[1];
-			answer[0] = new Answer("");
 			this.setWasParsedOk(false);
 		}
 	}

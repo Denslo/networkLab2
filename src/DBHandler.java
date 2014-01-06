@@ -11,4 +11,9 @@ public class DBHandler {
 		
 	}
 
+	public static Reminder getReminder(String id) {
+		// TODO get Reminder by id or return null if dosnt exsist
+		return null;
+	}
+
 }

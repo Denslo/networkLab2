@@ -1,13 +1,14 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.util.Calendar;
+
 
 public class SMTPRequest {
 
 	private static String COOKIE_NAME = "usermail=";
+	
 	private static String COOKE_PARAM = "user";
 	private static String LOG_OUT_PARAM = "logout";
 	private static String DELETE_PARAM = "delete";
+	private static String EDIT_PARAM = "edit";
 
 	public static void handler(Request request, Response response) throws Exception {
 
@@ -91,8 +92,36 @@ public class SMTPRequest {
 	}
 
 	private static void activateRemindersEditorHTML(Request request, Response response) {
-		// TODO Auto-generated method stub
+			
+		if (request.getParams().get(EDIT_PARAM) != null) {
+			if (DBHandler.getReminder(request.getParams().get(EDIT_PARAM)) != null) {
+				
+				String tempPage = new String(Helper.readFullFileToByteArray(request.getPath()));
+				String frist = tempPage.substring(0, tempPage.indexOf("<form"));
+				String last = tempPage.substring(tempPage.indexOf("</form>") + "</form>".length());
+				String dataPage = frist + "%data%" + last; 
+						
+				String reminderForHTML = parsReminderForHTML(DBHandler.getReminder(request.getParams().get(EDIT_PARAM)));
+				response.setData(dataPage.replaceAll("%data%", reminderForHTML).getBytes());
+			}
+		}
 		
+	}
+
+	private static String parsReminderForHTML(Reminder reminder) {
+		
+		StringBuilder retVal = new StringBuilder();
+		retVal.append("<form action=\"submit_reminder.html\"  method=\"post\">");
+		
+		retVal.append("Subject: <input type=\"text\" name=\"subject\" value=\"" + reminder.getSubject() + "\"><br>");
+		retVal.append("Content: <input type=\"text\" name=\"content\" value=\""+ reminder.getData() +"\"><br>");
+		//TODO change the info in calender
+		retVal.append("Date: <input type=\"date\" name=\"date\" value=\"" + reminder.getDue_date().get(Calendar.DAY_OF_MONTH) + "\"><br>");
+		retVal.append("Time: <input type=\"time\" name=\"time\" value=\"" + reminder.getDue_date().get(Calendar.HOUR_OF_DAY) + "\"><br>");
+		retVal.append("<input type=\"hidden\" name=\"id\" value=\"" + reminder.getId() + "\"><br>");
+		
+		retVal.append("<input type=\"submit\" value=\"Save\"></form>");
+		return retVal.toString();
 	}
 
 	private static void activateRemindersHTML(Request request, Response response) throws Exception {
@@ -103,11 +132,7 @@ public class SMTPRequest {
 			return;
 		}
 
-		File file = new File(request.getPath());
-		FileInputStream fis = new FileInputStream(file);
-		byte[] byteReader = new byte[(int) file.length()];
-		fis.read(byteReader);
-		fis.close();
+		byte[] byteReader = Helper.readFullFileToByteArray(request.getPath());
 
 		String origSite = new String(byteReader);
 
@@ -144,7 +169,7 @@ public class SMTPRequest {
 		return retVal.toString();
 	}
 
-	private static void activateMainHTML(Request request, Response response) throws IOException {
+	private static void activateMainHTML(Request request, Response response) throws Exception {
 
 		if (request.getParams().get(LOG_OUT_PARAM) != null) {
 			if (request.getParams().get(LOG_OUT_PARAM).equals("true")) {
@@ -156,7 +181,7 @@ public class SMTPRequest {
 
 	}
 
-	private static void activateIndexHTML(Request request, Response response) throws IOException {
+	private static void activateIndexHTML(Request request, Response response) throws Exception {
 
 		if (isCookeOK(request)) {
 			response.setRedirect("/smtp/main.html", request.GetHttpVer());

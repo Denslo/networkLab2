@@ -26,11 +26,11 @@ public class SMTPNotifictionThread implements Runnable {
 
 	public SMTPNotifictionThread() {
 		try {
-			reminderFile = new FileInputStream("C:\\School\\Networks\\shai.txt");
+			reminderFile = new FileInputStream((String) Server.prop.getProperty(REMINDER_FILE));
 			//taskFile = new FileInputStream((String) Server.prop.getProperty(TASK_FILE));
 			//pollsFile = new FileInputStream((String) Server.prop.getProperty(POLLS_FILE));
 			
-			reminderFileToSave = new FileOutputStream("C:\\School\\Networks\\shai.txt");
+	//		reminderFileToSave = new FileOutputStream("C:\\School\\Networks\\shai.txt");
 //			taskFileToSave = new FileOutputStream((String) Server.prop.getProperty(TASK_FILE));
 	//		pollsFileToSave = new FileOutputStream((String) Server.prop.getProperty(POLLS_FILE));
 		} catch (Exception e) {

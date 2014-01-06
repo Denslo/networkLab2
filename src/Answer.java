@@ -1,23 +1,23 @@
 public class Answer {
 
 	private final String DELIMITER = ";";
-	private int id;
+	private String id;
 	private String data;
 	private int count;
 
 	public Answer(String value) {
 			String[] temp = value.split(DELIMITER);
 
-			this.id = Integer.parseInt(temp[0]);
+			this.id = temp[0];
 			this.data = temp[1];
 			this.count = Integer.parseInt(temp[2]);
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -39,7 +39,7 @@ public class Answer {
 
 	public String toString() {
 		StringBuilder stringForReturn = new StringBuilder();
-		stringForReturn.append(String.valueOf(id));
+		stringForReturn.append(id);
 		stringForReturn.append(DELIMITER);
 		
 		stringForReturn.append(data);

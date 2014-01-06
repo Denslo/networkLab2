@@ -1,5 +1,4 @@
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -36,6 +35,10 @@ public class DBHandler {
 	public synchronized static void deleteReminder(String id, String mail) {
 		// TODO get the reminder from the db by id. if the reminder creator == mail delete this record
 		
+	}
+	
+	public synchronized static void addReminder(Reminder reminder) {
+		// TODO add reminder to the DB
 		
 	}
 	/*

@@ -115,7 +115,6 @@ public class SMTPRequest {
 		
 		retVal.append("Subject: <input type=\"text\" name=\"subject\" value=\"" + reminder.getSubject() + "\"><br>");
 		retVal.append("Content: <input type=\"text\" name=\"content\" value=\""+ reminder.getData() +"\"><br>");
-		//TODO change the info in calender
 		retVal.append("Date: <input type=\"date\" name=\"date\" value=\"" + reminder.getDue_date().get(Calendar.DAY_OF_MONTH) + "\"><br>");
 		retVal.append("Time: <input type=\"time\" name=\"time\" value=\"" + reminder.getDue_date().get(Calendar.HOUR_OF_DAY) + "\"><br>");
 		retVal.append("<input type=\"hidden\" name=\"id\" value=\"" + reminder.getId() + "\"><br>");
@@ -160,7 +159,7 @@ public class SMTPRequest {
 			retVal.append("<td>" + reminder.getWhen_created() + "</td>");
 
 			retVal.append("<td><a href=reminder_editor.html?edit=" + reminder.getId() + ">Edit</a></td>");
-			retVal.append("<td><a href=reminder.html?delete=" + reminder.getId() + ">Delete</a></td>");
+			retVal.append("<td><a href=reminders.html?delete=" + reminder.getId() + ">Delete</a></td>");
 
 			retVal.append("</tr>");
 		}

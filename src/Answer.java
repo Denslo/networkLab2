@@ -4,6 +4,12 @@ public class Answer {
 	private String id;
 	private String data;
 	private int count;
+	
+	public Answer(){
+		this.id = "";
+		this.data = "";
+		this.count = -1;
+	}
 
 	public Answer(String value) {
 			String[] temp = value.split(DELIMITER);

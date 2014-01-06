@@ -1,9 +1,15 @@
 public class Task extends Reminder {
 	private final String DELIMITER = ";;";
 	private Recipient[] recipient;
+	
+	public Task(){
+		super();
+	}
 
 	public Task(String key, String value) {
 		super(key, value);
+		this.recipient = new Recipient[1];
+		this.recipient[0] = new Recipient("");
 		
 		try {
 			
@@ -15,8 +21,6 @@ public class Task extends Reminder {
 				this.recipient[i] = new Recipient(recipients[i]);
 			}
 		} catch (Exception e) {
-			this.recipient = new Recipient[1];
-			this.recipient[0] = new Recipient("");
 			this.setWasParsedOk(false);
 		}
 	}

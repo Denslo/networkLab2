@@ -15,8 +15,22 @@ public class Reminder {
 	private Calendar due_date;
 	private boolean was_handled;
 	private boolean wasParsedOk;
+	
+	public Reminder(){
+		this.id = "";
+		this.creator = "";
+		this.data = "";
+		this.subject = "";
+		this.when_created = null;
+		this.due_date = null;
+		this.was_handled = Boolean.parseBoolean("");
+		this.setWasParsedOk(true);
+	}
 
 	public Reminder(String key, String value) {
+		
+		this();
+		
 		try {
 			String[] temp = value.split(DELIMITER);
 			
@@ -33,14 +47,6 @@ public class Reminder {
 			this.setWasParsedOk(true);
 			
 		} catch (Exception e) {
-
-			this.id = "";
-			this.creator = "";
-			this.data = "";
-			this.subject = "";
-			this.when_created = null;
-			this.due_date = null;
-			this.was_handled = Boolean.parseBoolean("");
 			this.setWasParsedOk(false);
 		}
 	}

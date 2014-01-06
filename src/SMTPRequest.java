@@ -38,6 +38,8 @@ public class SMTPRequest {
 
 			case "/smtp/reminder_editor.html":
 
+				activateRemindersEditorHTML(request, response);
+				
 				break;
 
 			case "/smtp/submit_reminder.html":
@@ -83,8 +85,14 @@ public class SMTPRequest {
 				break;
 			}
 
+			Helper.buildGETorPostResponse(request, response);
 		}
 
+	}
+
+	private static void activateRemindersEditorHTML(Request request, Response response) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private static void activateRemindersHTML(Request request, Response response) throws Exception {
@@ -110,7 +118,6 @@ public class SMTPRequest {
 		String siteWithUserMailAndData = siteWithUserMail.replaceAll("%table%", parsUserData(userData));
 
 		response.setData(siteWithUserMailAndData.getBytes());
-		Helper.buildGETorPostResponse(request, response);
 
 	}
 
@@ -147,8 +154,6 @@ public class SMTPRequest {
 			}
 		}
 
-		Helper.buildGETorPostResponse(request, response);
-
 	}
 
 	private static void activateIndexHTML(Request request, Response response) throws IOException {
@@ -166,8 +171,6 @@ public class SMTPRequest {
 			response.setRedirect(Server.prop.getProperty("defaultPage"), request.GetHttpVer());
 			return;
 		}
-
-		Helper.buildGETorPostResponse(request, response);
 
 	}
 

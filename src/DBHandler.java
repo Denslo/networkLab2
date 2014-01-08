@@ -1,5 +1,6 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -33,18 +34,23 @@ public class DBHandler {
 		return arrayToReturn;
 	}
 
-	public synchronized static void deleteReminder(String id, String mail) {
+	public synchronized static void deleteReminder(String id, String mail) throws Throwable {
 		// TODO get the reminder from the db by id. if the reminder creator == mail delete this record
+		Properties remiderProp = new Properties();
+		FileInputStream reminderFile = new FileInputStream("C:\\School\\Networks\\shai.txt");
+		remiderProp.load(reminderFile);
 		
+		Reminder reminder = new Reminder(id,(String) remiderProp.getProperty(id));
+		if(reminder.getCreator().equals(mail)) {
+			remiderProp.remove(id);
+		}
+				reminderFile.close();
+	}
+	
+	public static void main(String[] args) throws Throwable  {
+		deleteReminder("123", "shaiambar");
+			
 		
 	}
-	/*
-	public static void main(String[] args) throws IOException  {
-		Reminder[] reminder = getRimindersByUserMail("shai");
-		for (Reminder entry : reminder) {
-			System.out.println(entry.toString());
-			
-		}
-	}*/
 
 }

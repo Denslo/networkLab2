@@ -37,7 +37,8 @@ public class DBHandler {
 		
 	}
 	
-	public synchronized static void addReminder(Reminder reminder) {
+	public synchronized static boolean addReminder(Reminder reminder) {
+		return false;
 		// TODO add reminder to the DB
 		
 	}

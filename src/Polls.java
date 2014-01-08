@@ -1,4 +1,4 @@
-public class Polls extends Task {
+/*public class Polls extends Task {
 
 	private final String DELIMITER = ";;";
 	private Answer[] answer;
@@ -50,3 +50,4 @@ public class Polls extends Task {
 	}
 
 }
+*/

@@ -1,4 +1,3 @@
-import java.util.Calendar;
 import java.util.Map;
 
 public class SMTPRequest {
@@ -117,8 +116,8 @@ public class SMTPRequest {
 			reminder.setCreator(getMailFromCookie(request));
 			reminder.setSubject(reqParams.get("subject"));
 			reminder.setData(reqParams.get("content"));
-			reminder.setDue_date(reqParams.get("date"));
-			reminder.setDue_time(reqParams.get("time"));
+			reminder.setDue_dateDate(reqParams.get("date"));
+			reminder.setDue_dateTime(reqParams.get("time"));
 			reminder.setId(reqParams.get("id"));
 			retVal = true;
 		} catch (Exception e) {
@@ -152,8 +151,8 @@ public class SMTPRequest {
 
 		retVal.append("Subject: <input type=\"text\" name=\"subject\" value=\"" + reminder.getSubject() + "\"><br>");
 		retVal.append("Content: <input type=\"text\" name=\"content\" value=\"" + reminder.getData() + "\"><br>");
-		retVal.append("Date: <input type=\"date\" name=\"date\" value=\"" + reminder.getDue_date().get(Calendar.DAY_OF_MONTH) + "\"><br>");
-		retVal.append("Time: <input type=\"time\" name=\"time\" value=\"" + reminder.getDue_date().get(Calendar.HOUR_OF_DAY) + "\"><br>");
+		retVal.append("Date: <input type=\"date\" name=\"date\" value=\"" + reminder.getStringDue_dateDate() + "\"><br>");
+		retVal.append("Time: <input type=\"time\" name=\"time\" value=\"" + reminder.getStringDue_dateTime() + "\"><br>");
 		retVal.append("<input type=\"hidden\" name=\"id\" value=\"" + reminder.getId() + "\"><br>");
 
 		retVal.append("<input type=\"submit\" value=\"Save\"></form>");

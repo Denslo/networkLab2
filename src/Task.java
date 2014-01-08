@@ -1,4 +1,4 @@
-public class Task extends Reminder {
+/*public class Task extends Reminder {
 	private final String DELIMITER = ";;";
 	private Recipient[] recipient;
 	
@@ -41,3 +41,4 @@ public class Task extends Reminder {
 
 	}
 }
+*/

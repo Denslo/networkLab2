@@ -5,8 +5,8 @@ import java.util.Calendar;
 
 public class Reminder {
 
-	private final String DELIMITER = ";;;";
-	private final DateFormat DATE_FORMAT= new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	private static final String DELIMITER = ";;;";
+	private static final DateFormat DATE_FORMAT= new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	private String id;
 	private String creator;
 	private String data;
@@ -198,5 +198,15 @@ public class Reminder {
 		 System.out.println(r.getTimeWhen_created());
 		 System.out.println(r.getStringDue_date());
 		 System.out.println(r.getTimeDue_date());
+	}
+
+	public void setDue_date(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setDue_time(String string) {
+		// TODO Auto-generated method stub
+		
 	}
 }

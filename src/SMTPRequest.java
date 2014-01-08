@@ -1,13 +1,14 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.util.Calendar;
+import java.util.Map;
 
 public class SMTPRequest {
 
 	private static String COOKIE_NAME = "usermail=";
+
 	private static String COOKE_PARAM = "user";
 	private static String LOG_OUT_PARAM = "logout";
 	private static String DELETE_PARAM = "delete";
+	private static String EDIT_PARAM = "edit";
 
 	public static void handler(Request request, Response response) throws Exception {
 
@@ -39,11 +40,12 @@ public class SMTPRequest {
 			case "/smtp/reminder_editor.html":
 
 				activateRemindersEditorHTML(request, response);
-				
+
 				break;
 
 			case "/smtp/submit_reminder.html":
 
+				activateSubmitReminderHTML(request, response);
 				break;
 
 			case "/smtp/tasks.html":
@@ -90,24 +92,84 @@ public class SMTPRequest {
 
 	}
 
+	private static void activateSubmitReminderHTML(Request request, Response response) {
+
+		boolean submitResult = false;
+		Reminder newReminder = new Reminder();
+
+		if (parsAndSetNewReminder(newReminder, request)) {
+			if (DBHandler.addReminder(newReminder)) {
+				submitResult = true;
+			}
+		}
+
+		if (submitResult) {
+			response.setRedirect("/smtp/reminders.html", request.GetHttpVer());
+		}
+
+	}
+
+	private static boolean parsAndSetNewReminder(Reminder reminder, Request request) {
+		boolean retVal = false;
+		Map<String, String> reqParams = request.getParams();
+
+		try {
+			reminder.setCreator(getMailFromCookie(request));
+			reminder.setSubject(reqParams.get("subject"));
+			reminder.setData(reqParams.get("content"));
+			reminder.setDue_date(reqParams.get("date"));
+			reminder.setDue_time(reqParams.get("time"));
+			reminder.setId(reqParams.get("id"));
+			retVal = true;
+		} catch (Exception e) {
+			retVal = false;
+		}
+
+		return retVal;
+	}
+
 	private static void activateRemindersEditorHTML(Request request, Response response) {
-		// TODO Auto-generated method stub
-		
+
+		// if request have edit param on then then load this page with values
+		if (request.getParams().get(EDIT_PARAM) != null) {
+			if (DBHandler.getReminder(request.getParams().get(EDIT_PARAM)) != null) {
+
+				String tempPage = new String(Helper.readFullFileToByteArray(request.getPath()));
+				String frist = tempPage.substring(0, tempPage.indexOf("<form"));
+				String last = tempPage.substring(tempPage.indexOf("</form>") + "</form>".length());
+				String dataPage = frist + "%data%" + last;
+
+				String reminderForHTML = parsReminderForHTML(DBHandler.getReminder(request.getParams().get(EDIT_PARAM)));
+				response.setData(dataPage.replaceAll("%data%", reminderForHTML).getBytes());
+			}
+		}
+	}
+
+	private static String parsReminderForHTML(Reminder reminder) {
+
+		StringBuilder retVal = new StringBuilder();
+		retVal.append("<form action=\"submit_reminder.html\"  method=\"post\">");
+
+		retVal.append("Subject: <input type=\"text\" name=\"subject\" value=\"" + reminder.getSubject() + "\"><br>");
+		retVal.append("Content: <input type=\"text\" name=\"content\" value=\"" + reminder.getData() + "\"><br>");
+		retVal.append("Date: <input type=\"date\" name=\"date\" value=\"" + reminder.getDue_date().get(Calendar.DAY_OF_MONTH) + "\"><br>");
+		retVal.append("Time: <input type=\"time\" name=\"time\" value=\"" + reminder.getDue_date().get(Calendar.HOUR_OF_DAY) + "\"><br>");
+		retVal.append("<input type=\"hidden\" name=\"id\" value=\"" + reminder.getId() + "\"><br>");
+
+		retVal.append("<input type=\"submit\" value=\"Save\"></form>");
+		return retVal.toString();
 	}
 
 	private static void activateRemindersHTML(Request request, Response response) throws Exception {
 
+		// if delet was activated then delet and load this page again
 		if (request.getParams().get(DELETE_PARAM) != null) {
 			DBHandler.deleteReminder(request.getParams().get(DELETE_PARAM), getMailFromCookie(request));
 			response.setRedirect(request.getURI(true), request.GetHttpVer());
 			return;
 		}
 
-		File file = new File(request.getPath());
-		FileInputStream fis = new FileInputStream(file);
-		byte[] byteReader = new byte[(int) file.length()];
-		fis.read(byteReader);
-		fis.close();
+		byte[] byteReader = Helper.readFullFileToByteArray(request.getPath());
 
 		String origSite = new String(byteReader);
 
@@ -131,11 +193,11 @@ public class SMTPRequest {
 			retVal.append("<tr>");
 
 			retVal.append("<td>" + reminder.getSubject() + "</td>");
-			retVal.append("<td>" + reminder.getWhen_created() + "</td>");
-			retVal.append("<td>" + reminder.getWhen_created() + "</td>");
+			retVal.append("<td>" + reminder.getStringWhen_created() + "</td>");
+			retVal.append("<td>" + reminder.getStringDue_date() + "</td>");
 
 			retVal.append("<td><a href=reminder_editor.html?edit=" + reminder.getId() + ">Edit</a></td>");
-			retVal.append("<td><a href=reminder.html?delete=" + reminder.getId() + ">Delete</a></td>");
+			retVal.append("<td><a href=reminders.html?delete=" + reminder.getId() + ">Delete</a></td>");
 
 			retVal.append("</tr>");
 		}
@@ -144,7 +206,7 @@ public class SMTPRequest {
 		return retVal.toString();
 	}
 
-	private static void activateMainHTML(Request request, Response response) throws IOException {
+	private static void activateMainHTML(Request request, Response response) throws Exception {
 
 		if (request.getParams().get(LOG_OUT_PARAM) != null) {
 			if (request.getParams().get(LOG_OUT_PARAM).equals("true")) {
@@ -156,7 +218,7 @@ public class SMTPRequest {
 
 	}
 
-	private static void activateIndexHTML(Request request, Response response) throws IOException {
+	private static void activateIndexHTML(Request request, Response response) throws Exception {
 
 		if (isCookeOK(request)) {
 			response.setRedirect("/smtp/main.html", request.GetHttpVer());

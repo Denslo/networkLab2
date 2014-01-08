@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,6 +67,26 @@ public class Helper {
 		
 		
 		return retVal;
+	}
+	
+	public static byte[] readFullFileToByteArray(String filePath){
+		
+		byte[] byteReader = new byte[0];
+		
+		File file = new File(filePath);
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(file);
+			byteReader = new byte[(int) file.length()];
+			fis.read(byteReader);
+			fis.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	
+		return byteReader;
 	}
 
 }

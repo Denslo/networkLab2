@@ -105,4 +105,16 @@ public class Request {
 		this.type = this.getMethod() + " " + string + " " + this.GetHttpVer();
 
 	}
+
+	public String getCookieEmail() {
+		
+		String retString = null;
+		
+		try {
+			retString = this.getHeaderValue("Cookie").substring("usermail=".length());
+		} catch (Exception e) {
+			retString = null;
+		}
+		return retString;
+	}
 }

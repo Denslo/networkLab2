@@ -52,11 +52,11 @@ public class Response {
 
 	public byte[] getData() {
 		byte[] retVal = new byte[0];
-		
+
 		if (data != null) {
 			retVal = data.clone();
 		}
-		
+
 		return retVal;
 	}
 
@@ -178,15 +178,15 @@ public class Response {
 
 		this.addHeader("Content-Type", contentType);
 		this.addHeader("Content-Length", contentLength);
-		
+
 		if (requestFile != null) {
 			FileInputStream fileStream = new FileInputStream(requestFile);
 			data = new byte[length];
 			fileStream.read(data);
-			
+
 			fileStream.close();
 		}
-		
+
 	}
 
 	private String getContentType(String fileExtention) {
@@ -218,9 +218,13 @@ public class Response {
 
 	public void setRedirect(String address, String httpVer) {
 
+		if (httpVer == null) {
+			httpVer = "HTTP/1.0";
+		}
+
 		this.setType(httpVer + " 302 Found");
 		this.addHeader("Location", address);
-		
+
 	}
 
 }

@@ -1,22 +1,20 @@
-public class Answer {
+import java.util.UUID;
 
-	private final String DELIMITER = ";";
+public class Answer implements Cloneable {
+
 	private String id;
 	private String data;
 	private int count;
 	
 	public Answer(){
-		this.id = "";
+		this.id = UUID.randomUUID().toString();
 		this.data = "";
 		this.count = -1;
 	}
 
 	public Answer(String value) {
-			String[] temp = value.split(DELIMITER);
-
-			this.id = temp[0];
-			this.data = temp[1];
-			this.count = Integer.parseInt(temp[2]);
+		this();
+		setData(value);
 	}
 
 	public String getId() {
@@ -39,20 +37,15 @@ public class Answer {
 		return count;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
+	public void addToCount() {
+		if (count == -1) {
+			count = 1;
+		} else {
+			count++;
+		}
 	}
-
-	public String toString() {
-		StringBuilder stringForReturn = new StringBuilder();
-		stringForReturn.append(id);
-		stringForReturn.append(DELIMITER);
-		
-		stringForReturn.append(data);
-		stringForReturn.append(DELIMITER);
-		
-		stringForReturn.append(String.valueOf(count));
-		
-		return stringForReturn.toString();
+	
+	public Answer clone() throws CloneNotSupportedException{
+		return (Answer) super.clone();
 	}
 }

@@ -11,7 +11,7 @@ public class SMTPRequest {
 
 	public static void handler(Request request, Response response) throws Exception {
 
-		if (!isCookeOK(request) && !isUriIndex(request)) {
+		if (!isCookeOK(request) && !isUriIndex(request) && !isAnswerURL(request)) {
 
 			response.setRedirect(Server.prop.getProperty("defaultPage"), request.GetHttpVer());
 
@@ -49,22 +49,30 @@ public class SMTPRequest {
 
 			case "/smtp/tasks.html":
 
+				activateTasksHTML(request, response);
 				break;
 
 			case "/smtp/task_editor.html":
 
+				// TODO clean this msg
+				// do nothing this is here just for future use and code
+				// flexability
+				// but for now we do not need here any code
 				break;
 
 			case "/smtp/submit_task.html":
 
+				activateSubmitTaskHTML(request, response);
 				break;
 
 			case "/smtp/task_reply.html":
 
+				activateTaskReplayHTML(request, response);
 				break;
 
 			case "/smtp/polls.html":
-
+				
+				activatePollsHTML(request, response);
 				break;
 
 			case "/smtp/poll_editor.html":
@@ -89,6 +97,99 @@ public class SMTPRequest {
 			Helper.buildGETorPostResponse(request, response);
 		}
 
+	}
+
+	private static void activatePollsHTML(Request request, Response response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void activateTaskReplayHTML(Request request, Response response) {
+		Map<String, String> param = request.getParams();
+		DBHandler.updateTask(param.get("taskid"), param.get("recipientid"));
+	}
+
+	private static void activateSubmitTaskHTML(Request request, Response response) {
+		boolean submitResult = false;
+		Task newTask = new Task();
+
+		if (parsAndSetNewTask(newTask, request)) {
+			if (DBHandler.addTask(newTask)) {
+				submitResult = true;
+			}
+		}
+
+		if (submitResult) {
+			response.setRedirect("/smtp/tasks.html", request.GetHttpVer());
+		}
+
+	}
+
+	private static boolean parsAndSetNewTask(Task task, Request request) {
+		boolean retVal = false;
+		Map<String, String> reqParams = request.getParams();
+
+		try {
+			task.setCreator(getMailFromCookie(request));
+			task.setSubject(reqParams.get("subject"));
+			task.setData(reqParams.get("content"));
+			task.setDue_dateDate(reqParams.get("date"));
+			task.setDue_dateTime(reqParams.get("time"));
+			task.setId(reqParams.get("id"));
+			task.setRecipient(reqParams.get("recipient"));
+			retVal = true;
+		} catch (Exception e) {
+			retVal = false;
+		}
+
+		return retVal;
+	}
+
+	private static void activateTasksHTML(Request request, Response response) {
+		// if delet was activated then delet and load this page again
+		if (request.getParams().get(DELETE_PARAM) != null) {
+			DBHandler.deleteTesk(request.getParams().get(DELETE_PARAM), getMailFromCookie(request));
+			response.setRedirect(request.getURI(true), request.GetHttpVer());
+			return;
+		}
+
+		byte[] byteReader = Helper.readFullFileToByteArray(request.getPath());
+
+		String origSite = new String(byteReader);
+
+		String userMail = getMailFromCookie(request);
+		String siteWithUserMail = origSite.replaceAll("%mail%", userMail);
+
+		Task[] userData = DBHandler.getTasksByUserMail(userMail);
+		String siteWithUserMailAndData = siteWithUserMail.replaceAll("%table%", parsTaskData(userData));
+
+		response.setData(siteWithUserMailAndData.getBytes());
+
+	}
+
+	private static String parsTaskData(Task[] userData) {
+
+		StringBuilder retVal = new StringBuilder();
+		retVal.append("<table border=\"1\">");
+		retVal.append("<tr><th>Title</th><th>Created On</th><th>Due Date</th><th>Status</th></tr>");
+
+		for (Task task : userData) {
+			retVal.append("<tr>");
+
+			retVal.append("<td>" + task.getSubject() + "</td>");
+			retVal.append("<td>" + task.getStringWhen_created() + "</td>");
+			retVal.append("<td>" + task.getStringDue_date() + "</td>");
+			retVal.append("<td>" + task.getStatus() + "</td>");
+
+			if (task.getStatus().equals("in progress")) {
+				retVal.append("<td><a href=tasks.html?delete=" + task.getId() + ">Delete</a></td>");
+			}
+
+			retVal.append("</tr>");
+		}
+
+		retVal.append("</table>");
+		return retVal.toString();
 	}
 
 	private static void activateSubmitReminderHTML(Request request, Response response) {
@@ -159,7 +260,7 @@ public class SMTPRequest {
 		return retVal.toString();
 	}
 
-	private static void activateRemindersHTML(Request request, Response response) throws Exception {
+	private static void activateRemindersHTML(Request request, Response response) {
 
 		// if delet was activated then delet and load this page again
 		if (request.getParams().get(DELETE_PARAM) != null) {
@@ -176,13 +277,13 @@ public class SMTPRequest {
 		String siteWithUserMail = origSite.replaceAll("%mail%", userMail);
 
 		Reminder[] userData = DBHandler.getRimindersByUserMail(userMail);
-		String siteWithUserMailAndData = siteWithUserMail.replaceAll("%table%", parsUserData(userData));
+		String siteWithUserMailAndData = siteWithUserMail.replaceAll("%table%", parsReminderData(userData));
 
 		response.setData(siteWithUserMailAndData.getBytes());
 
 	}
 
-	private static String parsUserData(Reminder[] userData) {
+	private static String parsReminderData(Reminder[] userData) {
 
 		StringBuilder retVal = new StringBuilder();
 		retVal.append("<table border=\"1\">");
@@ -233,6 +334,10 @@ public class SMTPRequest {
 			return;
 		}
 
+	}
+
+	private static boolean isAnswerURL(Request request) {
+		return request.getURI(true).toLowerCase().equals("/smtp/task_reply.html") || request.getURI(true).toLowerCase().equals("/smtp/poll_reply.html");
 	}
 
 	private static boolean isUriIndex(Request request) {

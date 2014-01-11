@@ -1,6 +1,7 @@
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 
@@ -129,6 +130,10 @@ public class Reminder {
 
 	public String getStringDue_date() {
 		return DATE_FORMAT.format(due_date.getTime());
+	}
+	
+	public Date getDue_date(){
+		return due_date.getTime();
 	}
 	
 	private boolean isParamOK(String parm){

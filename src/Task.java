@@ -1,44 +1,48 @@
-/*public class Task extends Reminder {
-	private final String DELIMITER = ";;";
-	private Recipient[] recipient;
+import java.util.Date;
+
+public class Task extends Reminder {
+	
+	protected Recipient[] recipient;
 	
 	public Task(){
 		super();
+		recipient = new Recipient[1];
+		recipient[0] = new Recipient();
 	}
-
-	public Task(String key, String value) {
-		super(key, value);
-		this.recipient = new Recipient[1];
-		this.recipient[0] = new Recipient("");
+	
+	public void setRecipient(Recipient recipient) throws CloneNotSupportedException{
+		this.recipient[0] = recipient.clone();
+	}
+	
+	public Recipient getRecipient(){
+		return recipient[0];
+	}
+	
+	public String getStatus(){
+		String retVal = "in progress";
 		
-		try {
-			
-			String[] temp = value.split(";;;");
-			String[] recipients = temp[6].split(DELIMITER);
-			this.recipient = new Recipient[recipients.length];
-			
-			for (int i = 0; i < recipients.length; i++) {
-				this.recipient[i] = new Recipient(recipients[i]);
-			}
-		} catch (Exception e) {
-			this.setWasParsedOk(false);
+		if (getDue_date().before(new Date())) {
+			retVal = "time is due";
 		}
-	}
-	public Recipient[] getRecipient(){
-		return recipient;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder stringForReturn = new StringBuilder(super.toString());
 		
-		for (Recipient res : recipient) {
-			stringForReturn.append(res.toString());
-			stringForReturn.append(DELIMITER);
+		if (getRecipient().isDidReply()) {
+			retVal = "completed";
 		}
-		stringForReturn.append(";");
-		return stringForReturn.toString();
+		return retVal;
+	}
 
+	public void setRecipient(String mail) throws CloneNotSupportedException {
+		Recipient newRecip = new Recipient(mail);
+		setRecipient(newRecip);
+	}
+	
+	public String[] getAnswerURL(){
+		String[] retVal = new String[recipient.length];
+		
+		for (int i = 0; i < retVal.length; i++) {
+			retVal[i] = "http://" + Server.prop.getProperty("ServerName") + ":" + Server.prop.getProperty("port") + "/smtp/task_reply.html?taskid=" + this.getId() + "&recipientid=" + recipient[i].getId();
+		}
+		
+		return retVal;
 	}
 }
-*/

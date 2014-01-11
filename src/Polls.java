@@ -1,53 +1,41 @@
-/*public class Polls extends Task {
+public class Polls extends Task {
 
-	private final String DELIMITER = ";;";
 	private Answer[] answer;
 	private boolean completed;
 
-	public Polls(String key, String value) {
-		super(key, value);
-		answer = new Answer[1];
-		answer[0] = new Answer("");
-		
-		try {
-
-			String[] temp = value.split(";;;");
-			String[] answers = temp[7].split(DELIMITER);
-			this.setCompleted(Boolean.parseBoolean(temp[8]));
-			this.answer = new Answer[answers.length];
-
-			for (int i = 0; i < answers.length; i++) {
-				this.answer[i] = new Answer(answers[i]);
-			}
-		} catch (Exception e) {
-			this.setWasParsedOk(false);
-		}
+	public Polls() {
+		super();
+		answer = new Answer[0];
 	}
-	
+
 	public boolean isCompleted() {
 		return completed;
 	}
-	
+
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
 
-	@Override
-	public String toString() {
+	public void setAnswers(Answer[] answerArray) throws CloneNotSupportedException {
+		if (answerArray != null) {
 
-		StringBuilder stringForReturn = new StringBuilder(super.toString());
+			this.answer = new Answer[answerArray.length];
 
-		for (Answer ansewer : answer) {
-			stringForReturn.append(ansewer.toString());
-			stringForReturn.append(DELIMITER);
+			for (int i = 0; i < answerArray.length; i++) {
+				this.answer[i] = answerArray[i].clone();
+			}
 		}
-		stringForReturn.append(";");
-		
-		stringForReturn.append(completed);
-		
+	}
 
-		return stringForReturn.toString();
+	public void setRecipient(Recipient[] recipientArray) throws CloneNotSupportedException {
+		if (recipientArray != null) {
+
+			this.recipient = new Recipient[recipientArray.length];
+
+			for (int i = 0; i < recipientArray.length; i++) {
+				this.recipient[i] = recipientArray[i].clone();
+			}
+		}
 	}
 
 }
-*/

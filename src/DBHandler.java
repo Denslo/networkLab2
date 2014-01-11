@@ -51,4 +51,14 @@ public class DBHandler {
 		return null;
 	}
 
+	public synchronized static boolean addPoll(Polls newPoll) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public synchronized static void updatePoll(String taskID, String recipientID, String answerID) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

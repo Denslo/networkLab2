@@ -8,6 +8,7 @@ public class SMTPRequest {
 	private static String LOG_OUT_PARAM = "logout";
 	private static String DELETE_PARAM = "delete";
 	private static String EDIT_PARAM = "edit";
+	private static String CRLF = "\r\n";
 
 	public static void handler(Request request, Response response) throws Exception {
 
@@ -77,14 +78,20 @@ public class SMTPRequest {
 
 			case "/smtp/poll_editor.html":
 
+				// TODO clean this msg
+				// do nothing this is here just for future use and code
+				// flexability
+				// but for now we do not need here any code
 				break;
 
 			case "/smtp/submit_poll.html":
-
+				
+				activateSubmitPollHTML(request, response);
 				break;
 
 			case "/smtp/poll_reply.html":
 
+				activatePollReplayHTML(request, response);
 				break;
 
 			default:
@@ -97,6 +104,70 @@ public class SMTPRequest {
 			Helper.buildGETorPostResponse(request, response);
 		}
 
+	}
+
+	private static void activatePollReplayHTML(Request request, Response response) {
+		Map<String, String> param = request.getParams();
+		DBHandler.updatePoll(param.get("taskid"), param.get("recipientid"),param.get("answerid"));
+		
+	}
+
+	private static void activateSubmitPollHTML(Request request, Response response) {
+		boolean submitResult = false;
+		Polls newPoll = new Polls();
+
+		if (parsAndSetNewPoll(newPoll, request)) {
+			if (DBHandler.addPoll(newPoll)) {
+				submitResult = true;
+			}
+		}
+
+		if (submitResult) {
+			response.setRedirect("/smtp/polls.html", request.GetHttpVer());
+		}
+		
+	}
+
+	private static boolean parsAndSetNewPoll(Polls poll, Request request) {
+		boolean retVal = false;
+		Map<String, String> reqParams = request.getParams();
+
+		try {
+			poll.setCreator(getMailFromCookie(request));
+			poll.setSubject(reqParams.get("subject"));
+			poll.setData(reqParams.get("content"));
+			poll.setDue_dateDate(reqParams.get("date"));
+			poll.setDue_dateTime(reqParams.get("time"));
+			poll.setId(reqParams.get("id"));
+			
+			String[] tempRecipient = reqParams.get("recipients").split(CRLF);
+			Recipient[] newRecipients = new Recipient[tempRecipient.length];
+			
+			for (int i = 0; i < tempRecipient.length; i++) {
+				if (Helper.EmailValidator(tempRecipient[i])) {
+					newRecipients[i] = new Recipient(tempRecipient[i]);
+				} else {
+					throw new Exception();
+				}
+			}
+			
+			poll.setRecipient(newRecipients);
+			
+			String[] tempAnswers = reqParams.get("answers").split(CRLF);
+			Answer[] newAnswers = new Answer[tempAnswers.length];
+			
+			for (int i = 0; i < newAnswers.length; i++) {
+				newAnswers[i] = new Answer(tempAnswers[i]);
+			}
+			
+			poll.setAnswers(newAnswers);
+			
+			retVal = true;
+		} catch (Exception e) {
+			retVal = false;
+		}
+
+		return retVal;
 	}
 
 	private static void activatePollsHTML(Request request, Response response) {

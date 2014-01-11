@@ -36,7 +36,7 @@ public class Task extends Reminder {
 		setRecipient(newRecip);
 	}
 	
-	public String[] getAnswerURL(){
+	public String[] getUserURL(){
 		String[] retVal = new String[recipient.length];
 		
 		for (int i = 0; i < retVal.length; i++) {

@@ -50,5 +50,15 @@ public class Polls extends Task {
 		
 		return retVal.toString();
 	}
+	
+	public String[] getAnswersIDforURL(){
+		String[] retVal = new String[answer.length];
+		
+		for (int i = 0; i < retVal.length; i++) {
+			retVal[i] = "&answerid=" + answer[i].getId();
+		}
+		
+		return retVal;
+	}
 
 }

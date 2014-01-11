@@ -28,9 +28,9 @@ public class Reminder {
 		this.was_handled = Boolean.parseBoolean("");
 	}
 	
-	public Reminder(String id){
+	public Reminder(String creator){
 		this();
-		setId(id);
+		setCreator(creator);
 	}
 
 	public String getId() {

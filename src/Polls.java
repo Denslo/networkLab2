@@ -37,16 +37,24 @@ public class Polls extends Task {
 			}
 		}
 	}
+	
+	public Recipient[] getRecipientsArray(){
+		return recipient;
+	}
 
+	public Answer[] getAnswers(){
+		return answer;
+	}
+	
 	public String getRecipients() {
 		StringBuilder retVal = new StringBuilder();
 		
 		for (Recipient recipient : this.recipient) {
 			retVal.append(recipient.getMail());
-			retVal.append(" ");
+			retVal.append(", ");
 		}
 		
-		retVal.deleteCharAt(retVal.length()-1);
+		retVal.deleteCharAt(retVal.length()-2);
 		
 		return retVal.toString();
 	}

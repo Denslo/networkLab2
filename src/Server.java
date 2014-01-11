@@ -12,7 +12,7 @@ public class Server {
 	public static Properties prop = new Properties();
 
 	public static void main(String[] args) {
-
+		
 		try {
 			prop.load(new FileInputStream(CONFIG_FILE));
 			startSMTPNotifictionThread();
@@ -40,9 +40,11 @@ public class Server {
 	private static void startLisning() throws NumberFormatException, IOException, InterruptedException {
 
 		HttpRequestQueue queue = new HttpRequestQueue(Integer.parseInt(prop.getProperty("maxThreads")));
+
 		@SuppressWarnings("resource")
 		ServerSocket socket = new ServerSocket(Integer.parseInt(prop.getProperty("port")));
 
+		System.out.println("Server is Listening on port: " + prop.getProperty("port"));
 		while (true) {
 			// Listen for a TCP connection request.
 			Socket connection = socket.accept();

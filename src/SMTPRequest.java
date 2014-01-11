@@ -108,7 +108,12 @@ public class SMTPRequest {
 
 	private static void activatePollReplayHTML(Request request, Response response) {
 		Map<String, String> param = request.getParams();
-		DBHandler.updatePoll(param.get("taskid"), param.get("recipientid"),param.get("answerid"));
+		String tmp =new String(Helper.readFullFileToByteArray(request.getPath()));
+		if(DBHandler.updatePollAnswer(param.get("taskid"), param.get("recipientid"),param.get("answerid"))){
+			response.setData(tmp.replaceAll("%answer%", "Thank you Come Again :)").getBytes());
+		} else {
+			response.setData(tmp.replaceAll("%answer%", "Nothing to see here, Poll has been closed. go along now..").getBytes());
+		}
 		
 	}
 
@@ -215,7 +220,7 @@ public class SMTPRequest {
 
 	private static void activateTaskReplayHTML(Request request, Response response) {
 		Map<String, String> param = request.getParams();
-		DBHandler.updateTask(param.get("taskid"), param.get("recipientid"));
+		DBHandler.updateTaskCompleted(param.get("taskid"), param.get("recipientid"));
 	}
 
 	private static void activateSubmitTaskHTML(Request request, Response response) {

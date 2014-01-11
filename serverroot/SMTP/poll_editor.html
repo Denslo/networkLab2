@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Polls Editor</title>
+        <meta charset="windows-1255">
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+        <h1> Polls Editor </h1>
+        <form action="submit_poll.html"  method="post" id="mainForm">
+            Subject: <input type="text" name="subject" value=""><br>
+            Content: <input type="text" name="content" value=""><br>
+            Recipients: <br><textarea name="recipients" form="mainForm"></textarea><br>
+            Answers: <br><textarea name="answers" form="mainForm"></textarea><br>
+            Date: <input type="date" name="date" value=""><br>
+            Time: <input type="time" name="time" value=""><br>
+            <input type="submit" value="Save">
+        </form>  
+        <form action="polls.html"  method="get">
+            <input type="submit" value="Cancel">
+        </form>
+    </body>
+</html>

@@ -41,4 +41,14 @@ public class DBHandler {
 		// this method will update the DB so it will note that this task is complited	
 	}
 
+	public synchronized static void deletePoll(String id, String mail) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static Polls[] getPollssByUserMail(String userMail) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

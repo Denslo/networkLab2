@@ -71,7 +71,7 @@ public class SMTPRequest {
 				break;
 
 			case "/smtp/polls.html":
-				
+
 				activatePollsHTML(request, response);
 				break;
 
@@ -100,8 +100,46 @@ public class SMTPRequest {
 	}
 
 	private static void activatePollsHTML(Request request, Response response) {
-		// TODO Auto-generated method stub
-		
+		// if delet was activated then delet and load this page again
+		if (request.getParams().get(DELETE_PARAM) != null) {
+			DBHandler.deletePoll(request.getParams().get(DELETE_PARAM), getMailFromCookie(request));
+			response.setRedirect(request.getURI(true), request.GetHttpVer());
+			return;
+		}
+
+		byte[] byteReader = Helper.readFullFileToByteArray(request.getPath());
+
+		String origSite = new String(byteReader);
+
+		String userMail = getMailFromCookie(request);
+		String siteWithUserMail = origSite.replaceAll("%mail%", userMail);
+
+		Polls[] userData = DBHandler.getPollssByUserMail(userMail);
+		String siteWithUserMailAndData = siteWithUserMail.replaceAll("%table%", parsPollsData(userData));
+
+		response.setData(siteWithUserMailAndData.getBytes());
+
+	}
+
+	private static String parsPollsData(Polls[] userData) {
+		StringBuilder retVal = new StringBuilder();
+		retVal.append("<table border=\"1\">");
+		retVal.append("<tr><th>Title</th><th>Created On</th><th>Recipients</th></tr>");
+
+		for (Polls poll : userData) {
+			retVal.append("<tr>");
+
+			retVal.append("<td>" + poll.getSubject() + "</td>");
+			retVal.append("<td>" + poll.getStringWhen_created() + "</td>");
+			retVal.append("<td>" + poll.getRecipients() + "</td>");
+
+			retVal.append("<td><a href=polls.html?delete=" + poll.getId() + ">Delete</a></td>");
+
+			retVal.append("</tr>");
+		}
+
+		retVal.append("</table>");
+		return retVal.toString();
 	}
 
 	private static void activateTaskReplayHTML(Request request, Response response) {

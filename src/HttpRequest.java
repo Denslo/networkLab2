@@ -190,7 +190,10 @@ public class HttpRequest implements Runnable {
 		}
 
 		if (uriContainParam()) {
-			this.request.addParams(this.request.getURI(false).split("\\?")[1]);
+			String[] paramsinURI = this.request.getURI(false).split("\\?");
+			if (paramsinURI.length >= 2) {
+				this.request.addParams(paramsinURI[1]);
+			}
 		}
 
 		if (request.getMethod().equals("POST") && request.getHeaderValue("Content-Length") != null) {

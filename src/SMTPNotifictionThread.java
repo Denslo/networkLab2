@@ -22,7 +22,7 @@ public class SMTPNotifictionThread implements Runnable {
 			Calendar cal = Calendar.getInstance();
 
 			checkReminder(cal);
-			//checkTask(cal);
+			checkTask(cal);
 			//checkPolls(cal);
 
 		//	 TODO Make Delay
@@ -71,37 +71,32 @@ public class SMTPNotifictionThread implements Runnable {
 		}
 		return true;
 	}
-/*
+
 	private void checkTask(Calendar cal) {
-		Task task;
-		Properties taskProp = new Properties();
-
-		try {
-			taskProp.load(taskFile);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		for (Entry<Object, Object> entry : taskProp.entrySet()) {
-
-			task = new Task((String) entry.getKey(), (String) entry.getValue());
-
-			if (!(task.getRecipient()[0].isWasFirstSent())) {
-				// TODO sendTaskToRecipient(task);
-				task.getRecipient()[0].setWasFirstSent(true);
-			}
+		
+		Task[] tasks = DBHandler.getAllTasks();
+		
+		for (Task task : tasks) {
 
 			if (!task.isWas_handled()) {
-
-				if (cal.after(task.getDue_date())) {
-					// TODO sendTaskTimeIsDue(task.getCreator(),
-					// task.getRecipient()[0]);
+				
+				if (!(task.isTasKFirstSent())) {
+					// TODO sendTaskToRecipient(task);
+					task.setFirstsent(true);
+				}
+				
+				if(task.isTaskDone()){
+					//TODO sendTaskCompleted(task);
+					task.setWas_handled(true);
+					
+				}else if (cal.after(task.getDue_date())) {
+					// TODO sendTaskTimeIsDue(task.getCreator(),task.getRecipient()[0]);
 					task.setWas_handled(true);
 				}
 			}
 		}
 	}
-*/
+
 	private void checkReminder(Calendar cal) {
 
 		Reminder[] reminders = DBHandler.getAllRiminders();

@@ -45,4 +45,15 @@ public class Task extends Reminder {
 		
 		return retVal;
 	}
+	
+	public boolean isTaskDone(){
+		return recipient[0].isDidReply();
+	}
+	
+	public boolean isTasKFirstSent(){
+		return recipient[0].isWasFirstSent();
+	}
+	public void setFirstsent(boolean wasSent){
+		recipient[0].setWasFirstSent(wasSent);
+	}
 }

@@ -31,8 +31,8 @@ public class DBHandler {
 
 		return retList.toArray(new Reminder[0]);
 	}
-	
-	public static Reminder[] getAllRiminders(){
+
+	public static Reminder[] getAllRiminders() {
 		XStream xstream = new XStream(new DomDriver());
 
 		Reminder[] allReminders = new Reminder[0];
@@ -42,7 +42,7 @@ public class DBHandler {
 			allReminders = (Reminder[]) xstream.fromXML(file);
 		} catch (Exception e) {
 		}
-		
+
 		return allReminders;
 	}
 
@@ -68,12 +68,13 @@ public class DBHandler {
 			xstream.toXML(retList.toArray(new Reminder[0]), fos);
 			fos.close();
 
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 
 	}
 
 	public static Reminder getReminder(String id) {
-	
+
 		Reminder retVal = null;
 
 		try {
@@ -87,7 +88,8 @@ public class DBHandler {
 					retVal = reminder;
 				}
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 
 		return retVal;
 	}
@@ -142,7 +144,8 @@ public class DBHandler {
 			xstream.toXML(retList.toArray(new Task[0]), fos);
 			fos.close();
 
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 	}
 
 	public static Task[] getTasksByUserMail(String userMail) {
@@ -168,11 +171,30 @@ public class DBHandler {
 		return retList.toArray(new Task[0]);
 	}
 
+	public static Task[] getAllTasks() {
+
+		XStream xstream = new XStream(new DomDriver());
+
+		Task[] allTasks = new Task[0];
+
+		try {
+			File file = new File((String) Server.prop.get("taskFilePath"));
+			allTasks = (Task[]) xstream.fromXML(file);
+		} catch (Exception e) {
+		}
+
+		return allTasks;
+	}
+
 	public synchronized static boolean addTask(Task newTask) {
 
 		boolean retVal = false;
 
 		try {
+			
+			if (getTask(newTask.getId()) != null) {
+				deleteTask(newTask.getId(), newTask.getCreator());
+			}
 
 			XStream xstream = new XStream(new DomDriver());
 
@@ -190,6 +212,31 @@ public class DBHandler {
 		} catch (Exception e) {
 			retVal = false;
 		}
+		return retVal;
+	}
+
+	private static void deleteTask(String id, String creator) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static Task getTask(String id) {
+		Task retVal = null;
+
+		try {
+			XStream xstream = new XStream(new DomDriver());
+
+			File remFile = new File((String) Server.prop.get("taskFilePath"));
+			Task[] allReminders = (Task[]) xstream.fromXML(remFile);
+
+			for (Task reminder : allReminders) {
+				if (reminder.getId().equals(id)) {
+					retVal = reminder;
+				}
+			}
+		} catch (Exception e) {
+		}
+
 		return retVal;
 	}
 
@@ -239,7 +286,8 @@ public class DBHandler {
 			xstream.toXML(retList.toArray(new Polls[0]), fos);
 			fos.close();
 
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 
 	}
 
@@ -263,6 +311,21 @@ public class DBHandler {
 		}
 
 		return retList.toArray(new Polls[0]);
+	}
+
+	public static Polls[] getAllPolls() {
+		
+		XStream xstream = new XStream(new DomDriver());
+
+		Polls[] allPolls = new Polls[0];
+
+		try {
+			File file = new File((String) Server.prop.get("pollFilePath"));
+			allPolls = (Polls[]) xstream.fromXML(file);
+		} catch (Exception e) {
+		}
+		
+		return allPolls;
 	}
 
 	public synchronized static boolean addPoll(Polls newPoll) {

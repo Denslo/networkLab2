@@ -147,6 +147,32 @@ public class DBHandler {
 		} catch (Exception e) {
 		}
 	}
+	
+	private synchronized static void deleteTaskByID(String id, String mail) {
+
+		try {
+
+			XStream xstream = new XStream(new DomDriver());
+
+			File remFile = new File((String) Server.prop.get("taskFilePath"));
+			Task[] allTask = (Task[]) xstream.fromXML(remFile);
+
+			List<Task> retList = new ArrayList<Task>(Arrays.asList(allTask));
+
+			for (int i = 0; i < allTask.length; i++) {
+				if (allTask[i].getId().equals(id) && allTask[i].getCreator().equals(mail)) {
+					retList.remove(i);
+				}
+			}
+
+			FileOutputStream fos = new FileOutputStream(remFile);
+
+			xstream.toXML(retList.toArray(new Task[0]), fos);
+			fos.close();
+
+		} catch (Exception e) {
+		}
+	}
 
 	public static Task[] getTasksByUserMail(String userMail) {
 
@@ -193,7 +219,7 @@ public class DBHandler {
 		try {
 			
 			if (getTask(newTask.getId()) != null) {
-				deleteTask(newTask.getId(), newTask.getCreator());
+				deleteTaskByID(newTask.getId(), newTask.getCreator());
 			}
 
 			XStream xstream = new XStream(new DomDriver());

@@ -1,4 +1,3 @@
-/*
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,7 +29,7 @@ public class SMTPNotifictionThread implements Runnable {
 		//}
 
 	}
-
+/*
 	private void checkPolls(Calendar cal) {
 		Polls polls;
 		Properties pollsProp = new Properties();
@@ -61,7 +60,7 @@ public class SMTPNotifictionThread implements Runnable {
 			}
 		}
 	}
-
+	*/
 	private boolean checkIfComplet(Recipient[] recipient) {
 		
 		for (Recipient recipient2 : recipient) {
@@ -72,7 +71,7 @@ public class SMTPNotifictionThread implements Runnable {
 		}
 		return true;
 	}
-
+/*
 	private void checkTask(Calendar cal) {
 		Task task;
 		Properties taskProp = new Properties();
@@ -102,37 +101,21 @@ public class SMTPNotifictionThread implements Runnable {
 			}
 		}
 	}
-
+*/
 	private void checkReminder(Calendar cal) {
 
-		Reminder reminder;
-		
-		for (Entry<Object, Object> entry : ) {
+		Reminder[] reminders = DBHandler.getAllRiminders();
+				
+		for (Reminder reminder : reminders) {
 
 			if (!reminder.isWas_handled()) {
 
-				//cal.after(reminder.getDue_date())
 				if (cal.after((reminder.getDue_date()))) {
 					// TODO! sendReminder(reminder.getCreator());
-					System.out.println(reminder.getDue_date());
-
 					reminder.setWas_handled(true);
-					//TODO store
-					//remiderProp.setProperty(reminder.getId(), reminder.toString());
-					remiderProp.setProperty(reminder.getId(), reminder.toString());
-					try {
-						remiderProp.store(reminderFileToSave, null);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}	
+					DBHandler.addReminder(reminder);
 				}
 			}
 		}
 	}
-	public static void main(String[] args)  {
-		SMTPNotifictionThread smtp = new SMTPNotifictionThread();
-		smtp.run();
-	}
 }
-*/

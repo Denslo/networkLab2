@@ -1,4 +1,5 @@
-/*import java.io.File;
+/*
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,31 +13,7 @@ import java.util.Properties;
 
 public class SMTPNotifictionThread implements Runnable {
 
-	private static final String REMINDER_FILE = "reminderFilePath";
-	private static final String TASK_FILE = "taskFilePath";
-	private static final String POLLS_FILE = "pollFilePath";
-
-	private FileInputStream reminderFile;
-	private FileInputStream taskFile;
-	private FileInputStream pollsFile;
-	
-	private FileOutputStream reminderFileToSave;
-	private FileOutputStream taskFileToSave;
-	private FileOutputStream pollsFileToSave;
-
 	public SMTPNotifictionThread() {
-		try {
-			reminderFile = new FileInputStream((String) Server.prop.getProperty(REMINDER_FILE));
-			//taskFile = new FileInputStream((String) Server.prop.getProperty(TASK_FILE));
-			//pollsFile = new FileInputStream((String) Server.prop.getProperty(POLLS_FILE));
-			
-	//		reminderFileToSave = new FileOutputStream("C:\\School\\Networks\\shai.txt");
-//			taskFileToSave = new FileOutputStream((String) Server.prop.getProperty(TASK_FILE));
-	//		pollsFileToSave = new FileOutputStream((String) Server.prop.getProperty(POLLS_FILE));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
@@ -129,16 +106,8 @@ public class SMTPNotifictionThread implements Runnable {
 	private void checkReminder(Calendar cal) {
 
 		Reminder reminder;
-		Properties remiderProp = new Properties();
-		try {
-			remiderProp.load(reminderFile);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		for (Entry<Object, Object> entry : remiderProp.entrySet()) {
-
-			reminder = new Reminder((String) entry.getKey(),(String) entry.getValue());
+		
+		for (Entry<Object, Object> entry : ) {
 
 			if (!reminder.isWas_handled()) {
 

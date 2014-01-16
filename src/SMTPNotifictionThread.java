@@ -1,6 +1,4 @@
-
 import java.util.Calendar;
-
 
 public class SMTPNotifictionThread implements Runnable {
 
@@ -22,41 +20,46 @@ public class SMTPNotifictionThread implements Runnable {
 
 	}
 
-	/*
-	 * private void checkPolls(Calendar cal) { Polls polls; Properties pollsProp
-	 * = new Properties();
-	 * 
-	 * try { pollsProp.load(pollsFile); } catch (IOException e1) { // TODO
-	 * Auto-generated catch block e1.printStackTrace(); } for (Entry<Object,
-	 * Object> entry : pollsProp.entrySet()) { polls = new Polls((String)
-	 * entry.getKey(),(String) entry.getValue());
-	 * 
-	 * if (!polls.isWas_handled()){ if (cal.after(polls.getDue_date())) { //TODO
-	 * something
-	 * 
-	 * } else if (polls.isCompleted()) { //TODO sendToCreatorPollComple(polls);
-	 * polls.setWas_handled(true);
-	 * 
-	 * } else if (checkIfComplet(polls.getRecipient())) { //TODO
-	 * sendToCreatorPollComple(polls); polls.setWas_handled(true);
-	 * polls.setCompleted(true);
-	 * 
-	 * } } } }
-	 */
- /*	private boolean checkIfComplet(Recipient[] recipient) {
+	private void checkPolls(Calendar cal) { 
+		Polls[] polls = DBHandler.getAllPolls();
+		boolean wasChange = false;
+		
+		for (Polls poll : polls) {
+			
+			if (!poll.isWas_handled()){
+				
+				for (Recipient recipient : poll.getRecipientsArray()) {
+					
+					if(!recipient.isWasFirstSent()){
+						//TODO sendRecipientPoll(poll,recipient);
+						wasChange = true;
+						recipient.setWasFirstSent(true);
+					}
+				}
+				
+				if(checkIfComplet(poll.getRecipientsArray())){
+					
+				}
+			}
+		}
+	}
 
-		for (Recipient recipient2 : recipient) {
-			if (!recipient2.isDidReply()) {
+	private boolean checkIfComplet(Recipient[] recipient) {
+
+		for (Recipient currentRecipient : recipient) {
+			
+			if (!currentRecipient.isDidReply()) {
+				
 				return false;
 			}
-
 		}
 		return true;
-	}*/
+	}
 
 	private void checkTask(Calendar cal) {
 
 		Task[] tasks = DBHandler.getAllTasks();
+		boolean wasChange = false;
 
 		for (Task task : tasks) {
 
@@ -65,17 +68,23 @@ public class SMTPNotifictionThread implements Runnable {
 				if (!(task.isTasKFirstSent())) {
 					// TODO sendTaskToRecipient(task);
 					task.setFirstsent(true);
+					wasChange = true;
 				}
 
 				if (task.isTaskDone()) {
 					// TODO sendTaskCompleted(task);
 					task.setWas_handled(true);
+					wasChange = true;
 
 				} else if (cal.after(task.getDue_date())) {
 					// TODO
 					// sendTaskTimeIsDue(task.getCreator(),task.getRecipient()[0]);
 					task.setWas_handled(true);
+					wasChange = true;
 				}
+			}
+			if (wasChange) {
+				DBHandler.addTask(task);
 			}
 		}
 	}

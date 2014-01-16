@@ -31,6 +31,20 @@ public class DBHandler {
 
 		return retList.toArray(new Reminder[0]);
 	}
+	
+	public static Reminder[] getAllRiminders(){
+		XStream xstream = new XStream(new DomDriver());
+
+		Reminder[] allReminders = new Reminder[0];
+
+		try {
+			File file = new File((String) Server.prop.get("reminderFilePath"));
+			allReminders = (Reminder[]) xstream.fromXML(file);
+		} catch (Exception e) {
+		}
+		
+		return allReminders;
+	}
 
 	public synchronized static void deleteReminder(String id, String mail) {
 

@@ -262,7 +262,7 @@ public class SMTPRequest {
 	private static void activateTasksHTML(Request request, Response response) {
 		// if delet was activated then delet and load this page again
 		if (request.getParams().get(DELETE_PARAM) != null) {
-			DBHandler.deleteTesk(request.getParams().get(DELETE_PARAM), getMailFromCookie(request));
+			DBHandler.deleteTask(request.getParams().get(DELETE_PARAM), getMailFromCookie(request));
 			response.setRedirect(request.getURI(true), request.GetHttpVer());
 			return;
 		}

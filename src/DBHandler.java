@@ -122,7 +122,7 @@ public class DBHandler {
 		return retVal;
 	}
 
-	public synchronized static void deleteTesk(String id, String mail) {
+	public synchronized static void deleteTask(String id, String mail) {
 
 		try {
 
@@ -215,11 +215,6 @@ public class DBHandler {
 		return retVal;
 	}
 
-	private static void deleteTask(String id, String creator) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	private static Task getTask(String id) {
 		Task retVal = null;
 
@@ -227,11 +222,11 @@ public class DBHandler {
 			XStream xstream = new XStream(new DomDriver());
 
 			File remFile = new File((String) Server.prop.get("taskFilePath"));
-			Task[] allReminders = (Task[]) xstream.fromXML(remFile);
+			Task[] allTasks = (Task[]) xstream.fromXML(remFile);
 
-			for (Task reminder : allReminders) {
-				if (reminder.getId().equals(id)) {
-					retVal = reminder;
+			for (Task task : allTasks) {
+				if (task.getId().equals(id)) {
+					retVal = task;
 				}
 			}
 		} catch (Exception e) {
@@ -332,6 +327,10 @@ public class DBHandler {
 		boolean retVal = false;
 
 		try {
+			
+			if (getPoll(newPoll.getId()) != null) {
+				deletePoll(newPoll.getId(), newPoll.getCreator());
+			}
 
 			XStream xstream = new XStream(new DomDriver());
 
@@ -349,6 +348,26 @@ public class DBHandler {
 		} catch (Exception e) {
 			retVal = false;
 		}
+		return retVal;
+	}
+
+	private static Polls getPoll(String id) {
+		Polls retVal = null;
+
+		try {
+			XStream xstream = new XStream(new DomDriver());
+
+			File remFile = new File((String) Server.prop.get("pollFilePath"));
+			Polls[] allPolls = (Polls[]) xstream.fromXML(remFile);
+
+			for (Polls poll : allPolls) {
+				if (poll.getId().equals(id)) {
+					retVal = poll;
+				}
+			}
+		} catch (Exception e) {
+		}
+
 		return retVal;
 	}
 

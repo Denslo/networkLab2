@@ -1,1 +1,25 @@
-<Task-array/>
+<Task-array>
+  <Task>
+    <id>95502345-0a3a-4ced-856d-7dea01728f91</id>
+    <creator>a@k.com</creator>
+    <data>asd</data>
+    <subject>sa</subject>
+    <when__created>
+      <time>1389991224314</time>
+      <timezone>Asia/Jerusalem</timezone>
+    </when__created>
+    <due__date>
+      <time>1389991344314</time>
+      <timezone>Asia/Jerusalem</timezone>
+    </due__date>
+    <was__handled>false</was__handled>
+    <recipient>
+      <Recipient>
+        <id>8896ebe0-ce6f-4ea5-b8ce-781ddc1c2aed</id>
+        <mail>asd@asd.com</mail>
+        <didReply>false</didReply>
+        <wasFirstSent>false</wasFirstSent>
+      </Recipient>
+    </recipient>
+  </Task>
+</Task-array>

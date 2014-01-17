@@ -8,38 +8,47 @@ public class SMTPNotifictionThread implements Runnable {
 
 	@Override
 	public void run() {
-		// while (true) {
-		Calendar cal = Calendar.getInstance();
+		while (true) {
+			try{
+			Calendar cal = Calendar.getInstance();
 
-		checkReminder(cal);
-		checkTask(cal);
-		// checkPolls(cal);
+			checkReminder(cal);
+			checkTask(cal);
+			checkPolls(cal);
 
-		// TODO Make Delay
-		// }
+			Thread.sleep(60000);
+			}catch(Exception e){
+				
+			}
+		}
 
 	}
 
-	private void checkPolls(Calendar cal) { 
+	private void checkPolls(Calendar cal) {
 		Polls[] polls = DBHandler.getAllPolls();
-		boolean wasChange = false;
-		
+		boolean wasChange;
+
 		for (Polls poll : polls) {
-			
-			if (!poll.isWas_handled()){
-				
+			wasChange = false;
+			if (!poll.isWas_handled()) {
+
 				for (Recipient recipient : poll.getRecipientsArray()) {
-					
-					if(!recipient.isWasFirstSent()){
-						//TODO sendRecipientPoll(poll,recipient);
-						wasChange = true;
+
+					if (!recipient.isWasFirstSent()) {
+						// TODO sendRecipientPoll(poll,recipient);
 						recipient.setWasFirstSent(true);
+						wasChange = true;
 					}
 				}
-				
-				if(checkIfComplet(poll.getRecipientsArray())){
-					
+
+				if (checkIfComplet(poll.getRecipientsArray())) {
+					// TODO sendCreatorCompleted(poll)
+					wasChange = true;
+					poll.setWas_handled(true);
 				}
+			}
+			if (wasChange) {
+				DBHandler.addPoll(poll);
 			}
 		}
 	}
@@ -47,9 +56,9 @@ public class SMTPNotifictionThread implements Runnable {
 	private boolean checkIfComplet(Recipient[] recipient) {
 
 		for (Recipient currentRecipient : recipient) {
-			
+
 			if (!currentRecipient.isDidReply()) {
-				
+
 				return false;
 			}
 		}
@@ -59,9 +68,11 @@ public class SMTPNotifictionThread implements Runnable {
 	private void checkTask(Calendar cal) {
 
 		Task[] tasks = DBHandler.getAllTasks();
-		boolean wasChange = false;
+		boolean wasChange;
 
 		for (Task task : tasks) {
+
+			wasChange = false;
 
 			if (!task.isWas_handled()) {
 
@@ -98,11 +109,17 @@ public class SMTPNotifictionThread implements Runnable {
 			if (!reminder.isWas_handled()) {
 
 				if (cal.after((reminder.getDue_date()))) {
-					// TODO! sendReminder(reminder.getCreator());
+		//			sendReminder(reminder);
 					reminder.setWas_handled(true);
 					DBHandler.addReminder(reminder);
 				}
 			}
 		}
 	}
+/*
+	private void sendReminder(Reminder reminder) {
+		String mailTo = reminder.g
+		SMTPClient reminderMail = new SMTPClient(reminder, data, sender, subject);
+		
+	}*/
 }

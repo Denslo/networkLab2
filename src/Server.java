@@ -33,7 +33,7 @@ public class Server {
 	}
 
 	private static void startSMTPNotifictionThread() {
-		// TODO Auto-generated method stub
+		//(new Thread(new SMTPNotifictionThread()).start();
 
 	}
 

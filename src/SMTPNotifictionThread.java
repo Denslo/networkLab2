@@ -14,11 +14,10 @@ public class SMTPNotifictionThread implements Runnable {
 				checkReminder(cal);
 				checkTask(cal);
 				checkPolls(cal);
-				System.out.println("hi");
-				Thread.sleep(60000);
-			} catch (Exception e) {
-
-			}
+				//TODO for debuging
+				//Thread.sleep(60000);
+				Thread.sleep(15000);
+			} catch (Exception e) {	}
 		}
 
 	}
@@ -110,7 +109,7 @@ public class SMTPNotifictionThread implements Runnable {
 			if (!reminder.isWas_handled()) {
 
 				if (cal.getTime().after((reminder.getDue_date()))) {
-					 sendReminder(reminder);
+					sendReminder(reminder);
 					reminder.setWas_handled(true);
 					DBHandler.addReminder(reminder);
 				}
@@ -123,8 +122,8 @@ public class SMTPNotifictionThread implements Runnable {
 		  String data = reminder.getData();
 		  String sender = reminder.getCreator();
 		  String subject = reminder.getSubject();
-		  SmTpAmit reminderMail = new SmTpAmit();
-		  reminderMail.connect(mailTo, sender, data, subject,sender);
+		  SMTPClient smtpClient = new SMTPClient(mailTo, data, sender, subject);
+		  smtpClient.connect();
 	  
 	  }
 	 

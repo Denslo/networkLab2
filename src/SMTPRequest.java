@@ -1,4 +1,7 @@
+import java.util.Calendar;
 import java.util.Map;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 public class SMTPRequest {
 
@@ -391,6 +394,11 @@ public class SMTPRequest {
 		String siteWithUserMail = origSite.replaceAll("%mail%", userMail);
 
 		Reminder[] userData = DBHandler.getRimindersByUserMail(userMail);
+		for (Reminder reminder : userData) {
+			if (reminder.getWhen_created().getTime().before(reminder.getDue_date())) {
+				System.out.println("aaa");
+			}
+		}
 		String siteWithUserMailAndData = siteWithUserMail.replaceAll("%table%", parsReminderData(userData));
 
 		response.setData(siteWithUserMailAndData.getBytes());

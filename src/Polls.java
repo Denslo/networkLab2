@@ -68,5 +68,16 @@ public class Polls extends Task {
 		
 		return retVal;
 	}
+	
+	@Override
+	public String[] getUserURL(){
+		String[] retVal = new String[recipient.length];
+		
+		for (int i = 0; i < retVal.length; i++) {
+			retVal[i] = "http://" + Server.prop.getProperty("ServerName") + ":" + Server.prop.getProperty("port") + "/smtp/poll_reply.html?taskid=" + this.getId() + "&recipientid=" + recipient[i].getId();
+		}
+		
+		return retVal;
+	}
 
 }

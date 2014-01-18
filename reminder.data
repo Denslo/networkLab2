@@ -1,30 +1,15 @@
 <Reminder-array>
   <Reminder>
-    <id>6b0e086c-9150-4b72-b555-6890898d96de</id>
-    <creator>a@k.com</creator>
-    <data>s</data>
-    <subject>shai</subject>
-    <when__created>
-      <time>1389990975608</time>
-      <timezone>Asia/Jerusalem</timezone>
-    </when__created>
-    <due__date>
-      <time>1392669615608</time>
-      <timezone>Asia/Jerusalem</timezone>
-    </due__date>
-    <was__handled>false</was__handled>
-  </Reminder>
-  <Reminder>
-    <id>041b63e1-85ac-400c-9e21-7698017d446c</id>
-    <creator>a@k.com</creator>
+    <id>f013bb0c-efe9-4302-8ff7-fda63de2e5d3</id>
+    <creator>asd@asd.com</creator>
     <data></data>
-    <subject>ytry</subject>
+    <subject>aaa</subject>
     <when__created>
-      <time>1389991702211</time>
+      <time>1389996864922</time>
       <timezone>Asia/Jerusalem</timezone>
     </when__created>
     <due__date>
-      <time>1389991702211</time>
+      <time>1393280064922</time>
       <timezone>Asia/Jerusalem</timezone>
     </due__date>
     <was__handled>false</was__handled>

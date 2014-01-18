@@ -123,8 +123,8 @@ public class SMTPNotifictionThread implements Runnable {
 		  String data = reminder.getData();
 		  String sender = reminder.getCreator();
 		  String subject = reminder.getSubject();
-	  SmTpAmit reminderMail = new SmTpAmit();
-	  reminderMail.connect(mailTo, sender,  data, sender, subject);
+		  SmTpAmit reminderMail = new SmTpAmit();
+		  reminderMail.connect(mailTo, sender, data, subject,sender);
 	  
 	  }
 	 

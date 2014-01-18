@@ -42,12 +42,13 @@ public class SmTpAmit {
 
 	private void getConnection() {
 		try {
+			System.setProperty("java.net.preferIPv4Stack" , "true");
 			socket = new Socket(this.name, this.port);
 			in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 			out = new OutputStreamWriter(socket.getOutputStream());
 		} catch (Exception e) {
-			System.err.println("Unknown Host:" + this.name);
+			e.printStackTrace();
 		}
 	}
 
@@ -87,8 +88,8 @@ public class SmTpAmit {
 			if (!response.startsWith(welcomeCode)) {
 				throw new IOException("Could not connect to the server");
 			}
-
-			if (Server.prop.getProperty(AUTH_LOGIN).equals("true")) {
+			//Server.prop.getProperty(AUTH_LOGIN).equals("TRUE")
+			if (true) {
 
 				out.write("EHLO " + CLIENT_NAME + CRLF);
 				System.out.println("EHLO " + CLIENT_NAME);

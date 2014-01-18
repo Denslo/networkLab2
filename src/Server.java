@@ -33,7 +33,7 @@ public class Server {
 	}
 
 	private static void startSMTPNotifictionThread() {
-		//(new Thread(new SMTPNotifictionThread()).start();
+		(new Thread(new SMTPNotifictionThread())).start();
 
 	}
 

@@ -9,16 +9,15 @@ public class SMTPNotifictionThread implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			try{
-			Calendar cal = Calendar.getInstance();
+			try {
+				Calendar cal = Calendar.getInstance();
+				checkReminder(cal);
+				checkTask(cal);
+				checkPolls(cal);
+				System.out.println("hi");
+				Thread.sleep(60000);
+			} catch (Exception e) {
 
-			checkReminder(cal);
-			checkTask(cal);
-			checkPolls(cal);
-
-			Thread.sleep(60000);
-			}catch(Exception e){
-				
 			}
 		}
 
@@ -45,6 +44,7 @@ public class SMTPNotifictionThread implements Runnable {
 					// TODO sendCreatorCompleted(poll)
 					wasChange = true;
 					poll.setWas_handled(true);
+					System.out.println("hi2");
 				}
 			}
 			if (wasChange) {
@@ -66,7 +66,6 @@ public class SMTPNotifictionThread implements Runnable {
 	}
 
 	private void checkTask(Calendar cal) {
-
 		Task[] tasks = DBHandler.getAllTasks();
 		boolean wasChange;
 
@@ -86,8 +85,9 @@ public class SMTPNotifictionThread implements Runnable {
 					// TODO sendTaskCompleted(task);
 					task.setWas_handled(true);
 					wasChange = true;
+					System.out.println(task.isWas_handled());
 
-				} else if (cal.after(task.getDue_date())) {
+				} else if (cal.getTime().after(task.getDue_date())) {
 					// TODO
 					// sendTaskTimeIsDue(task.getCreator(),task.getRecipient()[0]);
 					task.setWas_handled(true);
@@ -101,25 +101,31 @@ public class SMTPNotifictionThread implements Runnable {
 	}
 
 	private void checkReminder(Calendar cal) {
+		
 
 		Reminder[] reminders = DBHandler.getAllRiminders();
 
 		for (Reminder reminder : reminders) {
-
+			
 			if (!reminder.isWas_handled()) {
 
-				if (cal.after((reminder.getDue_date()))) {
-		//			sendReminder(reminder);
+				if (cal.getTime().after((reminder.getDue_date()))) {
+					 sendReminder(reminder);
 					reminder.setWas_handled(true);
 					DBHandler.addReminder(reminder);
 				}
 			}
 		}
 	}
-/*
-	private void sendReminder(Reminder reminder) {
-		String mailTo = reminder.g
-		SMTPClient reminderMail = new SMTPClient(reminder, data, sender, subject);
-		
-	}*/
+	
+	  private void sendReminder(Reminder reminder) { 
+		  String mailTo = reminder.getCreator();
+		  String data = reminder.getData();
+		  String sender = reminder.getCreator();
+		  String subject = reminder.getSubject();
+	  SmTpAmit reminderMail = new SmTpAmit();
+	  reminderMail.connect(mailTo, sender,  data, sender, subject);
+	  
+	  }
+	 
 }

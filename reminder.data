@@ -1,17 +1,1 @@
-<Reminder-array>
-  <Reminder>
-    <id>f013bb0c-efe9-4302-8ff7-fda63de2e5d3</id>
-    <creator>asd@asd.com</creator>
-    <data></data>
-    <subject>aaa</subject>
-    <when__created>
-      <time>1389996864922</time>
-      <timezone>Asia/Jerusalem</timezone>
-    </when__created>
-    <due__date>
-      <time>1393280064922</time>
-      <timezone>Asia/Jerusalem</timezone>
-    </due__date>
-    <was__handled>false</was__handled>
-  </Reminder>
-</Reminder-array>
+<Reminder-array/>

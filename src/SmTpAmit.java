@@ -5,100 +5,83 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import org.apache.commons.codec.binary.Base64;
 
-public class SMTPClient {
+public class SmTpAmit {
 
 	private final String CRLF = "\r\n";
-	private final String CLIENT_NAME = "ShaiAmbar RanK";
+	private final String CLIENT_NAME = "NoaKochav AmitGilat";
 	private final String AUTH_LOGIN = "AUTH LOGIN";
-	private final static String MailFrom = "MAIL FROM: ";
-	private final static String MailTo = "RCPT TO: ";
-	private final static String SubjectHeader = "Subject: ";
-	static String From_Name = "Mr.Tasker";
-	private final static String SenderHeader = "Sender: ";
-	private final static String FromHeader = "From: ";
-	private final static String Dot = ".";
-	private final static String QUIT = "QUIT";
-	private static String DATA = "DATA";
+	private final String MAIL_FROM = "MAIL FROM: ";
+	private final String MAIL_TO = "RCPT TO: ";
+	private final String SUBJECT = "Subject: ";
+	private final String FROM_NAME = "Mr.Tasker";
+	private final String SENDER = "Sender: ";
+	private final String FROM = "From: ";
+	private final String QUIT = "QUIT";
+	private final String DATA = "DATA";
+	private final String DOT = ".";
+	private final String welcomeCode = "220";
+	private final String OKCode = "250";
+	private final String AuthCode = "334";
+	private final String FinalAuthCode = "235";
+	private final String DataOKCode = "354";
+	private final String sessionOKTerminationCode = "221";
 
-	private final static String welcomeCode = "220";
-	private final static String OKCode = "250";
-	private final static String AuthCode = "334";
-	private final static String FinalAuthCode = "235";
-	private final static String DataOKCode = "354";
-	private final static String sessionOKTerminationCode = "221";
-
-	private String mailTo;
-	//TODO private String elFrom;
-	private String data;
-	private String sender;
-	private String subject;
-	
-	private String name;
 	private int port;
+	private String name;
 	private Socket socket;
-	private BufferedReader inputStream;
-	private OutputStreamWriter outPutStream;
+	private BufferedReader in;
+	private OutputStreamWriter out;
+	//private ConfigFileManager config = null;
 
-	
-	public SMTPClient(String mailTo, String data, String sender, String subject) {
+	public SmTpAmit() {
 
-		this.mailTo = mailTo;
-		//TODO this.elFrom = emailFrom;
-		this.name =  "compnet.idc.ac.il";//Server.prop.getProperty("SMTPName"); 
-		this.port =  8080; //Integer.parseInt(Server.prop.getProperty("SMTPPort"));
-		this.data = data;
-		this.subject = subject;
-		this.sender = sender;
-		
+		this.name = "compnet.idc.ac.il";
+		this.port = 25;
+		//this.config = new ConfigFileManager();
 	}
-/*TODO
+
 	private void getConnection() {
 		try {
 			socket = new Socket(this.name, this.port);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			in = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
 			out = new OutputStreamWriter(socket.getOutputStream());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Unknown Host:" + this.name);
 		}
-	}*/
-/*TODO
+	}
+
 	private void close() {
 		try {
 			in.close();
 			out.close();
 			socket.close();
 		} catch (Exception ex) {
-			
+			// Ignore the exception. Probably the socket is not open.
 		}
-	}*/
+	}
 
 	private String getResponse() {
 		String response = null;
 		try {
-			response = inputStream.readLine();
+			response = in.readLine();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return response;
 	}
 
-	public void connect() {
+	public void connect(String emailTo, String emailFrom, String data,
+			String subject, String sender) {
+
 		String response;
 		String userNameEncoded;
 		String passwordEncoded;
 
 		try {
-			try {
-				socket = new Socket(this.name, this.port);
-				inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				outPutStream = new OutputStreamWriter(socket.getOutputStream());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			getConnection();
 			
+			// After connecting, the SMTP server will send a response string.
 			response = getResponse(); 
 			System.out.println(response);
 			if (!response.startsWith(welcomeCode)) {
@@ -107,9 +90,9 @@ public class SMTPClient {
 
 			if (Server.prop.getProperty(AUTH_LOGIN).equals("true")) {
 
-				outPutStream.write("EHLO " + CLIENT_NAME + CRLF);
+				out.write("EHLO " + CLIENT_NAME + CRLF);
 				System.out.println("EHLO " + CLIENT_NAME);
-				outPutStream.flush();
+				out.flush();
 
 				response = getResponse();
 				System.out.println(response);
@@ -128,24 +111,21 @@ public class SMTPClient {
 				if (!response.startsWith(OKCode)) {
 					throw new IOException("Error with the SMTP server");
 				}
+			}else {
 
-			}
-
-			else {
-
-				outPutStream.write("HELO " + CLIENT_NAME + CRLF);
+				out.write("HELO " + CLIENT_NAME + CRLF);
 				System.out.println("HELO " + CLIENT_NAME);
-				outPutStream.flush();
+				out.flush();
 
 				response = getResponse();
 				System.out.println(response);
 				if (!response.startsWith(OKCode)) {
 					throw new IOException("Error with the SMTP server");
 				}
-
 			}
-			outPutStream.write(AUTH_LOGIN + CRLF);
-			outPutStream.flush();
+			
+			out.write(AUTH_LOGIN + CRLF);
+			out.flush();
 			System.out.println(AUTH_LOGIN);
 
 			response = getResponse();
@@ -154,10 +134,10 @@ public class SMTPClient {
 				throw new IOException("Error with the SMTP server");
 			}
 
-			userNameEncoded = Base64.encodeBase64String("tasker@cscidc.ac.il".getBytes());
-			// System.out.println(Base64.decodeBase64(userNameEncoded));
-			outPutStream.write(userNameEncoded + CRLF);
-			outPutStream.flush();
+			userNameEncoded = Base64.encodeBase64String("tasker@cscidc.ac.il"
+					.getBytes());
+			out.write(userNameEncoded + CRLF);
+			out.flush();
 			System.out.println(userNameEncoded);
 
 			response = getResponse();
@@ -167,8 +147,8 @@ public class SMTPClient {
 			}
 
 			passwordEncoded = Base64.encodeBase64String("password".getBytes());
-			outPutStream.write(passwordEncoded + CRLF);
-			outPutStream.flush();
+			out.write(passwordEncoded + CRLF);
+			out.flush();
 			System.out.println(passwordEncoded);
 
 			response = getResponse();
@@ -177,30 +157,25 @@ public class SMTPClient {
 				throw new IOException();
 			}
 
-			sendEmail();
+			sendEmail(emailTo, emailFrom, data, subject, sender);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			try {
-				inputStream.close();
-				outPutStream.close();
-				socket.close();
-			} catch (Exception ex) {
-				
-			}
+		} finally {
+			close();
 		}
-
 	}
 
-	private void sendEmail() {
+	private void sendEmail(String emailTo, String emailFrom, String data,
+			String subject, String sender) {
 
 		String response;
 
 		try {
-			outPutStream.write(MailFrom + sender + CRLF);
-			outPutStream.flush();
-			System.out.println(MailFrom + sender + CRLF);
+			out.write(MAIL_FROM + emailFrom +CRLF);
+			out.flush();
+			System.out.println(MAIL_FROM + emailFrom + CRLF);
 
 			response = getResponse();
 			System.out.println(response);
@@ -208,9 +183,9 @@ public class SMTPClient {
 				throw new IOException();
 			}
 
-			outPutStream.write(MailTo + this.mailTo + CRLF);
-			outPutStream.flush();
-			System.out.println(MailTo + this.mailTo + CRLF);
+			out.write(MAIL_TO +emailTo+ CRLF);
+			out.flush();
+			System.out.println(MAIL_TO + emailTo + CRLF);
 
 			response = getResponse();
 			System.out.println(response);
@@ -218,8 +193,8 @@ public class SMTPClient {
 				throw new IOException();
 			}
 
-			outPutStream.write(DATA + CRLF);
-			outPutStream.flush();
+			out.write(DATA + CRLF);
+			out.flush();
 			System.out.println(DATA + CRLF);
 
 			response = getResponse();
@@ -230,23 +205,19 @@ public class SMTPClient {
 
 			// Mail context part.
 			StringBuilder mailContent = new StringBuilder();
-			mailContent.append(SubjectHeader);
-			mailContent.append(this.subject);
+			mailContent.append(SUBJECT + subject);
 			mailContent.append(CRLF);
-			mailContent.append(FromHeader);
-			mailContent.append(From_Name);
+			mailContent.append(FROM +  FROM_NAME);
 			mailContent.append(CRLF);
-			mailContent.append(SenderHeader);
-			mailContent.append(sender);
+			mailContent.append(SENDER + sender);
+			mailContent.append(CRLF + CRLF);
+			mailContent.append(data);
 			mailContent.append(CRLF);
-			mailContent.append(CRLF);
-			mailContent.append(this.data);
-			mailContent.append(CRLF);
-			mailContent.append(Dot);
+			mailContent.append(DOT);
 			mailContent.append(CRLF);
 
-			outPutStream.write(mailContent.toString());
-			outPutStream.flush();
+			out.write(mailContent.toString());
+			out.flush();
 			System.out.println(mailContent.toString());
 
 			response = getResponse();
@@ -255,12 +226,14 @@ public class SMTPClient {
 				throw new IOException();
 			}
 
-			outPutStream.write(QUIT + CRLF);
-			outPutStream.flush();
+			// Quit part.
+			out.write(QUIT + CRLF);
+			out.flush();
 			System.out.println(QUIT + CRLF);
 
 			response = getResponse();
 			System.out.println(response);
+			
 			if (!response.startsWith(sessionOKTerminationCode)) {
 				throw new IOException();
 			}
@@ -268,7 +241,5 @@ public class SMTPClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-
 }

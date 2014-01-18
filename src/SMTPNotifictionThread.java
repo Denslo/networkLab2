@@ -33,7 +33,7 @@ public class SMTPNotifictionThread implements Runnable {
 				for (Recipient recipient : poll.getRecipientsArray()) {
 
 					if (!recipient.isWasFirstSent()) {
-						// TODO sendRecipientPoll(poll,recipient);
+						sendRecipientPoll(poll,recipient);
 						recipient.setWasFirstSent(true);
 						wasChange = true;
 					}
@@ -49,6 +49,19 @@ public class SMTPNotifictionThread implements Runnable {
 			if (wasChange) {
 				DBHandler.addPoll(poll);
 			}
+		}
+	}
+
+	private void sendRecipientPoll(Polls poll, Recipient recipient) {
+		
+		//TODO for shai - a simple example
+		String[] a = poll.getUserURL(recipient.getId());
+		for (String string : a) {
+			System.out.println(string);
+		}
+		for (Answer answer : poll.getAnswers()) {
+			System.out.println(answer.getId());
+			System.out.println(answer.getData());
 		}
 	}
 
@@ -75,7 +88,7 @@ public class SMTPNotifictionThread implements Runnable {
 			if (!task.isWas_handled()) {
 
 				if (!(task.isTasKFirstSent())) {
-					// TODO sendTaskToRecipient(task);
+					sendTaskToRecipient(task);
 					task.setFirstsent(true);
 					wasChange = true;
 				}
@@ -97,6 +110,11 @@ public class SMTPNotifictionThread implements Runnable {
 				DBHandler.addTask(task);
 			}
 		}
+	}
+
+	private void sendTaskToRecipient(Task task) {
+		System.out.println(task.getUserURL()[0]);
+		
 	}
 
 	private void checkReminder(Calendar cal) {

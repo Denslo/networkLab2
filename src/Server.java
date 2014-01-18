@@ -13,6 +13,9 @@ public class Server {
 
 	public static void main(String[] args) {
 		
+		//TODO think if we want to remove it
+		System.setProperty("java.net.preferIPv4Stack" , "true");
+		
 		try {
 			prop.load(new FileInputStream(CONFIG_FILE));
 			startSMTPNotifictionThread();

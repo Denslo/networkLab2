@@ -1,3 +1,5 @@
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class SMTPNotifictionThread implements Runnable {
@@ -40,10 +42,19 @@ public class SMTPNotifictionThread implements Runnable {
 				}
 
 				if (checkIfComplet(poll.getRecipientsArray())) {
-					// TODO sendCreatorCompleted(poll)
+					sendCreatorCompleted(poll);
 					wasChange = true;
+					poll.setCompleted(true);
 					poll.setWas_handled(true);
-					System.out.println("hi2");
+				} else {
+					for (Recipient recipient : poll.getRecipientsArray()) {
+						if(!recipient.isWasSendWhenAnswer()){
+							//sendSomeOneAnswer(poll, recipient);
+							recipient.setWasSendWhenAnswer(true);
+							wasChange = true;
+						}
+						
+					}
 				}
 			}
 			if (wasChange) {
@@ -52,18 +63,8 @@ public class SMTPNotifictionThread implements Runnable {
 		}
 	}
 
-	private void sendRecipientPoll(Polls poll, Recipient recipient) {
-		
-		//TODO for shai - a simple example
-		String[] a = poll.getUserURL(recipient.getId());
-		for (String string : a) {
-			System.out.println(string);
-		}
-		for (Answer answer : poll.getAnswers()) {
-			System.out.println(answer.getId());
-			System.out.println(answer.getData());
-		}
-	}
+
+
 
 	private boolean checkIfComplet(Recipient[] recipient) {
 
@@ -94,14 +95,14 @@ public class SMTPNotifictionThread implements Runnable {
 				}
 
 				if (task.isTaskDone()) {
-					// TODO sendTaskCompleted(task);
+					sendTaskCompleted(task);
 					task.setWas_handled(true);
 					wasChange = true;
 					System.out.println(task.isWas_handled());
 
 				} else if (cal.getTime().after(task.getDue_date())) {
-					// TODO
-					// sendTaskTimeIsDue(task.getCreator(),task.getRecipient()[0]);
+					 
+					sendTaskTimeIsDue(task);
 					task.setWas_handled(true);
 					wasChange = true;
 				}
@@ -112,10 +113,8 @@ public class SMTPNotifictionThread implements Runnable {
 		}
 	}
 
-	private void sendTaskToRecipient(Task task) {
-		System.out.println(task.getUserURL()[0]);
-		
-	}
+
+
 
 	private void checkReminder(Calendar cal) {
 		
@@ -134,6 +133,61 @@ public class SMTPNotifictionThread implements Runnable {
 			}
 		}
 	}
+	/*TODO
+	private void sendSomeOneAnswer(Polls poll, Recipient recipient) {
+		String mailTo = poll.getCreator();
+		String sender = poll.getCreator();
+		String subject = poll.getSubject();
+		StringBuilder data = new StringBuilder();
+	
+	}*/
+	private void sendCreatorCompleted(Polls poll) {
+		StringBuilder data = new StringBuilder();
+		String mailTo = poll.getCreator();
+		String sender = poll.getCreator();
+		String subject = poll.getSubject();
+		Answer[] answers = poll.getAnswers();
+		data.append("And the result are:....\r\n");
+		int count;
+		
+		for (Answer answer : answers) {
+			count = answer.getCount();
+			data.append("the " + answer.getData() + " was voted " + String.valueOf(count) + " times \r\n" );
+		}
+		SMTPClient smtpClient = new SMTPClient(mailTo, data.toString(), sender, subject);
+		  smtpClient.connect();
+		
+		
+	}
+	private void sendRecipientPoll(Polls poll, Recipient recipient) {
+		
+		String[] links = poll.getUserURL(recipient.getId());
+		Answer[] answer = poll.getAnswers();
+		StringBuilder data = new StringBuilder();
+		
+	    String mailTo = recipient.getMail();
+	    String sender = poll.getCreator();
+	    String subject = poll.getSubject();
+		data.append("The Question is:" + poll.getData() + "\r\n");
+		data.append("Please Choose An Answer:" + "\r\n");
+		
+		int index = 0;
+		for (String link : links) {
+			
+			data.append("To Choose - " + " " + answer[index].getData()+ " " + "Press-->" + link + "\r\n");
+			data.append("\r\n");
+			index++;
+		}
+		
+		SMTPClient smtpClient = new SMTPClient(mailTo, data.toString(), sender, subject);
+		  smtpClient.connect();
+		
+		/*
+		for (Answer answer : poll.getAnswers()) {
+			System.out.println(answer.getId());
+			System.out.println(answer.getData());
+		}*/
+	}
 	
 	  private void sendReminder(Reminder reminder) { 
 		  String mailTo = reminder.getCreator();
@@ -144,5 +198,45 @@ public class SMTPNotifictionThread implements Runnable {
 		  smtpClient.connect();
 	  
 	  }
-	 
+	  
+	  private void sendTaskCompleted(Task task) {
+		  String mailTo = task.getCreator();
+		  String data = "The Task Is Done congratulation";
+		  String sender = task.getCreator();
+		  String subject = task.getSubject();
+		  
+		  SMTPClient smtpClient = new SMTPClient(mailTo, data, sender, subject);
+		  smtpClient.connect();
+		  
+	  }
+	  private void sendTaskTimeIsDue(Task task) {
+		  String mailTo = task.getRecipient().getMail();
+		  String data = "The time is due and the task was not completed";
+		  String sender = task.getCreator();
+		  String subject = task.getSubject();
+		  
+		  SMTPClient smtpClient = new SMTPClient(sender, data, sender, subject);
+		  smtpClient.connect();
+		  
+		  SMTPClient MailToRecipient = new SMTPClient(mailTo, data, sender, subject);
+		  MailToRecipient.connect();
+		  
+		  
+		  
+	  }	 
+	  private void sendTaskToRecipient(Task task) {
+		  StringBuilder taskToSend = new StringBuilder();
+		  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		  
+		  String mailTo = task.getRecipient().getMail();
+		  taskToSend.append(task.getData() + "\r\n");
+		  String sender = task.getCreator();
+		  String subject = task.getSubject();
+		  taskToSend.append("The due date is: " +  dateFormat.format(task.getDue_date()) + "\r\n");
+		  taskToSend.append("Press the link:" + task.getUserURL()[0]);
+		  
+		  SMTPClient smtpClient = new SMTPClient(mailTo, taskToSend.toString(), sender, subject);
+		  smtpClient.connect();
+		  
+	  }
 }

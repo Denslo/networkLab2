@@ -15,10 +15,8 @@ public class SMTPNotifictionThread implements Runnable {
 				Calendar cal = Calendar.getInstance();
 				checkReminder(cal);
 				checkTask(cal);
-				checkPolls(cal);
-				//TODO for debuging
-				//Thread.sleep(60000);
-				Thread.sleep(15000);
+				checkPolls(cal);				
+				Thread.sleep(60000);
 			} catch (Exception e) {	}
 		}
 
@@ -48,8 +46,8 @@ public class SMTPNotifictionThread implements Runnable {
 					poll.setWas_handled(true);
 				} else {
 					for (Recipient recipient : poll.getRecipientsArray()) {
-						if(!recipient.isWasSendWhenAnswer()){
-							//sendSomeOneAnswer(poll, recipient);
+						if((!recipient.isWasSendWhenAnswer()) && recipient.isDidReply()){
+							sendSomeOneAnswer(poll, recipient);
 							recipient.setWasSendWhenAnswer(true);
 							wasChange = true;
 						}
@@ -62,6 +60,7 @@ public class SMTPNotifictionThread implements Runnable {
 			}
 		}
 	}
+
 
 
 
@@ -133,26 +132,42 @@ public class SMTPNotifictionThread implements Runnable {
 			}
 		}
 	}
-	/*TODO
 	private void sendSomeOneAnswer(Polls poll, Recipient recipient) {
 		String mailTo = poll.getCreator();
 		String sender = poll.getCreator();
 		String subject = poll.getSubject();
+		Answer[] answers = poll.getAnswers();
+		int count;
 		StringBuilder data = new StringBuilder();
-	
-	}*/
+		data.append(recipient.getMail() + " voted and the current status for the poll is: \r\n");
+		
+		for (Answer answer : answers) {
+			count = answer.getCount();
+			if (count < 0){
+				count = 0;
+			}
+			data.append("for " + answer.getData() + " was voted " + String.valueOf(count) + " times \r\n" );
+		}
+		SMTPClient smtpClient = new SMTPClient(mailTo, data.toString(), sender, subject);
+		  smtpClient.connect();
+		
+		
+	}
 	private void sendCreatorCompleted(Polls poll) {
 		StringBuilder data = new StringBuilder();
 		String mailTo = poll.getCreator();
 		String sender = poll.getCreator();
 		String subject = poll.getSubject();
 		Answer[] answers = poll.getAnswers();
-		data.append("And the result are:....\r\n");
+		data.append("Poll Completed And the result are:....\r\n");
 		int count;
 		
 		for (Answer answer : answers) {
 			count = answer.getCount();
-			data.append("the " + answer.getData() + " was voted " + String.valueOf(count) + " times \r\n" );
+			if (count < 0){
+				count = 0;
+			}
+			data.append("for " + answer.getData() + " was voted " + String.valueOf(count) + " times \r\n" );
 		}
 		SMTPClient smtpClient = new SMTPClient(mailTo, data.toString(), sender, subject);
 		  smtpClient.connect();

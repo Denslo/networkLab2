@@ -6,6 +6,7 @@ public class Recipient implements Cloneable {
 	private String mail;
 	private boolean didReply;
 	private boolean wasFirstSent;
+	private boolean wasSendWhenAnswer;
 
 	public Recipient() {
 
@@ -13,6 +14,7 @@ public class Recipient implements Cloneable {
 		this.mail = "";
 		this.setDidReply(false);
 		this.setWasFirstSent(false);
+		this.setWasSendWhenAnswer(false);
 	}
 
 	public Recipient(String mail) {
@@ -57,6 +59,14 @@ public class Recipient implements Cloneable {
 	@Override
 	public Recipient clone() throws CloneNotSupportedException{
 		return (Recipient) super.clone();
+	}
+
+	public boolean isWasSendWhenAnswer() {
+		return wasSendWhenAnswer;
+	}
+
+	public void setWasSendWhenAnswer(boolean wasSendWhenAnswer) {
+		this.wasSendWhenAnswer = wasSendWhenAnswer;
 	}
 
 }
